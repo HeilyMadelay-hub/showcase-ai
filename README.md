@@ -278,16 +278,6 @@ curl "http://localhost:8000/search_documents/?query=contrato"
 
 ---
 
-## 🤝 **Contribuir**
-
-1. 🍴 **Fork** el proyecto
-2. 🌿 **Crea** tu feature branch (`git checkout -b feature/AmazingFeature`)
-3. 💾 **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. 📤 **Push** a la branch (`git push origin feature/AmazingFeature`)
-5. 🔃 **Abre** un Pull Request
-
----
-
 ## 📄 **Licencia**
 
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
