@@ -109,16 +109,13 @@ Each demo branch contains its own README with detailed setup and usage instructi
 
 ---
 
-## 🤝 **Interested in Custom Solutions?**
+🤝 Interested in Custom Solutions?
 
 <div align="center">
-
-**Looking for tailored legal AI solutions?**
-
+Looking for tailored legal AI solutions?
 We specialize in building custom AI applications for law firms and legal departments.
-
-[📧 **Get in Touch**](#) | [💼 **View Portfolio**](#) | [📅 **Schedule Demo**](#)
-
+📧 Email Us | 📞 Call to Schedule Demo
+heilymadelayajtan@icloud.com | +34 640 359 233
 </div>
 
 ---
