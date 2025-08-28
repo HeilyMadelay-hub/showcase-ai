@@ -1,4 +1,4 @@
-# 📄 Clasificador de Documentos Legales
+# 📄 Legal Document Classifier
 
 <div align="center">
 
@@ -7,36 +7,36 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-demo-orange.svg)
 
-**Sistema profesional para subir, clasificar y auditar documentos legales**
+**Professional system for uploading, classifying and auditing legal documents**
 
-*Combinando NLP (Hugging Face), cumplimiento normativo, audit trail y seguridad con cifrado*
+*Combining NLP (Hugging Face), regulatory compliance, audit trail and security with encryption*
 
-[Instalación](#-instalación) • [Demo](#-demo-rápida) • [Documentación](#-documentación-api) • [Contribuir](#-contribuir)
+[Installation](#-quick-installation) • [Demo](#-quick-demo) • [Documentation](#-api-documentation) • [Contribute](#-contribute)
 
 </div>
 
 ---
 
-## 🎯 **Características Principales**
+## 🎯 **Main Features**
 
-- 🤖 **Clasificación Inteligente** - NLP con modelos de Hugging Face
-- 🔒 **Seguridad Avanzada** - Cifrado AES-256 y control de roles  
-- 📋 **Cumplimiento Normativo** - Validación automática de documentos
-- 🔍 **Audit Trail Completo** - Trazabilidad con hash encadenado
-- 🌐 **Interfaz Web Moderna** - Dashboard responsive y intuitivo
-- ⚡ **API REST** - Endpoints robustos para integraciones
+- 🤖 **Intelligent Classification** - NLP with Hugging Face models
+- 🔒 **Advanced Security** - AES-256 encryption and role control  
+- 📋 **Regulatory Compliance** - Automatic document validation
+- 🔍 **Complete Audit Trail** - Traceability with chained hash
+- 🌐 **Modern Web Interface** - Responsive and intuitive dashboard
+- ⚡ **REST API** - Robust endpoints for integrations
 
 ---
 
-## 🛠️ **Requisitos del Sistema**
+## 🛠️ **System Requirements**
 
-| Componente | Versión Requerida |
-|------------|-------------------|
+| Component | Required Version |
+|-----------|------------------|
 | **Python** | 3.10+ |
-| **Pip** | Última versión |
-| **SO** | Windows / macOS / Linux |
+| **Pip** | Latest version |
+| **OS** | Windows / macOS / Linux |
 
-### 📦 Dependencias Principales
+### 📦 Main Dependencies
 
 ```bash
 fastapi>=0.104.0
@@ -50,50 +50,50 @@ sqlite-utils>=3.35.0
 
 ---
 
-## 📁 **Arquitectura del Proyecto**
+## 📁 **Project Architecture**
 
 ```
 clasificador_docs/
-├── 🖥️ back/                          # Backend FastAPI
+├── 🖥️ back/                          # FastAPI Backend
 │   ├── app/
-│   │   ├── 📊 audit/                 # Sistema de auditoría
+│   │   ├── 📊 audit/                 # Audit system
 │   │   │   └── audit_trail.py
-│   │   ├── 🧠 classification.py      # Motor NLP
-│   │   ├── ⚖️ compliance/            # Validación legal
+│   │   ├── 🧠 classification.py      # NLP engine
+│   │   ├── ⚖️ compliance/            # Legal validation
 │   │   │   └── compliance_engine.py
-│   │   ├── ⚙️ constants.py           # Configuración
-│   │   ├── 💾 database.py            # Conexión SQLite
-│   │   ├── 📝 demo_dataset.py        # Datos de prueba
-│   │   ├── 📄 ingestion.py           # Extracción de texto
-│   │   ├── 🔗 integration/           # Exportaciones
+│   │   ├── ⚙️ constants.py           # Configuration
+│   │   ├── 💾 database.py            # SQLite connection
+│   │   ├── 📝 demo_dataset.py        # Test data
+│   │   ├── 📄 ingestion.py           # Text extraction
+│   │   ├── 🔗 integration/           # Exports
 │   │   │   └── export_lexnet.py
 │   │   ├── 🚀 main.py                # API endpoints
-│   │   ├── 🔍 search.py              # Motor búsqueda
-│   │   └── 🔐 security/              # Seguridad
+│   │   ├── 🔍 search.py              # Search engine
+│   │   └── 🔐 security/              # Security
 │   │       ├── encryption.py
 │   │       └── roles.py
-│   ├── 📤 uploads/                   # Archivos subidos
-│   └── 💾 documents.db               # Base de datos
-├── 🌐 front/                         # Frontend web
+│   ├── 📤 uploads/                   # Uploaded files
+│   └── 💾 documents.db               # Database
+├── 🌐 front/                         # Web frontend
 │   └── static/
 │       ├── index.html
 │       ├── script.js
 │       └── style.css
-├── 🧪 test/                          # Tests unitarios
-└── ▶️ run_demo.py                    # Ejecutor de demo
+├── 🧪 test/                          # Unit tests
+└── ▶️ run_demo.py                    # Demo runner
 ```
 
 ---
 
-## ⚡ **Instalación Rápida**
+## ⚡ **Quick Installation**
 
-### 1️⃣ Clonar repositorio
+### 1️⃣ Clone repository
 ```bash
-git clone https://github.com/tuusuario/clasificador_docs.git
+git clone https://github.com/yourusername/clasificador_docs.git
 cd clasificador_docs/back
 ```
 
-### 2️⃣ Crear entorno virtual
+### 2️⃣ Create virtual environment
 ```bash
 python -m venv .venv
 
@@ -104,38 +104,38 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3️⃣ Instalar dependencias
+### 3️⃣ Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4️⃣ Ejecutar servidor
+### 4️⃣ Run server
 ```bash
 python -m uvicorn app.main:app --reload
 ```
 
-🎉 **¡Listo!** Accede a: `http://localhost:8000`
+🎉 **Ready!** Access: `http://localhost:8000`
 
 ---
 
-## 📚 **Documentación API**
+## 📚 **API Documentation**
 
-### 🔗 Endpoints Disponibles
+### 🔗 Available Endpoints
 
-| Método | Endpoint | Descripción | Parámetros |
+| Method | Endpoint | Description | Parameters |
 |--------|----------|-------------|------------|
-| `POST` | `/load_demo/` | Carga dataset de demostración | - |
-| `POST` | `/upload_document/` | Sube y clasifica documento | `file` (PDF/TXT) |
-| `GET` | `/list_documents/` | Lista documentos | `category` (opcional) |
-| `GET` | `/search_documents/` | Busca en documentos | `query` (requerido) |
+| `POST` | `/load_demo/` | Load demo dataset | - |
+| `POST` | `/upload_document/` | Upload and classify document | `file` (PDF/TXT) |
+| `GET` | `/list_documents/` | List documents | `category` (optional) |
+| `GET` | `/search_documents/` | Search in documents | `query` (required) |
 
-### 📤 **Subir Documento**
+### 📤 **Upload Document**
 
 **Request:**
 ```bash
 POST /upload_document/
 Content-Type: multipart/form-data
-file: [archivo.pdf]
+file: [document.pdf]
 ```
 
 **Response:**
@@ -143,151 +143,155 @@ file: [archivo.pdf]
 {
   "success": true,
   "document_id": 1,
-  "filename": "contrato.pdf",
-  "detected_category": "contrato",
+  "filename": "contract.pdf",
+  "detected_category": "contract",
   "confidence": 0.92,
   "all_scores": [
-    ["contrato", 0.92],
-    ["sentencia", 0.05],
-    ["normativa", 0.03]
+    ["contract", 0.92],
+    ["judgment", 0.05],
+    ["regulation", 0.03]
   ],
   "compliance_status": "✅",
   "hash_integrity": "abc123..."
 }
 ```
 
-### 📋 **Listar Documentos**
+### 📋 **List Documents**
 
 ```bash
-GET /list_documents/?category=contrato
+GET /list_documents/?category=contract
 ```
 
-### 🔍 **Buscar Documentos**
+### 🔍 **Search Documents**
 
 ```bash
-GET /search_documents/?query=firma
+GET /search_documents/?query=signature
 ```
 
 ---
 
-## 🔄 **Flujo del Sistema**
+## 🔄 **System Flow**
 
 ```mermaid
 graph TD
-    A[👤 Usuario sube documento] --> B[📄 ingestion.py - Extrae texto]
-    B --> C[🧠 classification.py - Clasifica con NLP]  
-    C --> D[⚖️ compliance_engine.py - Valida requisitos]
-    D --> E[🔐 encryption.py - Cifra y guarda]
-    E --> F[📊 audit_trail.py - Registra con hash]
-    F --> G[💾 database.py - Guarda en SQLite]
-    G --> H[🔗 export_lexnet.py - Exporta]
-    H --> I[🌐 Frontend - Muestra resultados]
+    A[👤 User uploads document] --> B[📄 ingestion.py - Extract text]
+    B --> C[🧠 classification.py - Classify with NLP]  
+    C --> D[⚖️ compliance_engine.py - Validate requirements]
+    D --> E[🔐 encryption.py - Encrypt and save]
+    E --> F[📊 audit_trail.py - Register with hash]
+    F --> G[💾 database.py - Save to SQLite]
+    G --> H[🔗 export_lexnet.py - Export]
+    H --> I[🌐 Frontend - Show results]
 ```
 
 ---
 
-## 🌐 **Frontend Características**
+## 🌐 **Frontend Features**
 
-- ✨ **Interfaz Moderna** - Diseño responsivo y intuitivo
-- 📊 **Dashboard Interactivo** - Métricas en tiempo real  
-- 🔍 **Filtros Avanzados** - Búsqueda y ordenamiento
-- 📈 **Indicadores Visuales** - Estados de cumplimiento
-- 🔒 **Control de Acceso** - Permisos por rol de usuario
-- 📤 **Exportación** - Integración con sistemas externos
-
----
-
-## 🔒 **Seguridad y Cumplimiento**
-
-### 🛡️ Medidas de Seguridad
-
-| Característica | Implementación |
-|----------------|----------------|
-| **Cifrado** | AES-256 para archivos |
-| **Control de Acceso** | Roles: Auditor Senior/Junior, Usuario |
-| **Audit Trail** | Hash encadenado (blockchain-style) |
-| **Integridad** | Verificación SHA-256 |
-
-### ⚖️ Validación Legal
-
-- ✅ **Contratos** - Verificación de cláusulas esenciales
-- ⚖️ **Sentencias** - Estructura judicial válida  
-- 📜 **Normativas** - Formato regulatorio correcto
+- ✨ **Modern Interface** - Responsive and intuitive design
+- 📊 **Interactive Dashboard** - Real-time metrics  
+- 🔍 **Advanced Filters** - Search and sorting
+- 📈 **Visual Indicators** - Compliance status
+- 🔒 **Access Control** - User role permissions
+- 📤 **Export** - External system integration
 
 ---
 
-## 💡 **Extras Diferenciales**
+## 🔒 **Security and Compliance**
 
-🔥 **Características Únicas:**
+### 🛡️ Security Measures
 
-- 🔗 **Mini Blockchain** - Historial inmutable con hash encadenado
-- 🤖 **IA Especializada** - Modelos entrenados para documentos legales
-- 🏛️ **Integración LexNet** - Exportación simulada a sistemas judiciales
-- 📊 **Control Room** - Dashboard ejecutivo con métricas ROI
-- 🔍 **Búsqueda Semántica** - Análisis de contenido inteligente
+| Feature | Implementation |
+|---------|----------------|
+| **Encryption** | AES-256 for files |
+| **Access Control** | Roles: Senior/Junior Auditor, User |
+| **Audit Trail** | Chained hash (blockchain-style) |
+| **Integrity** | SHA-256 verification |
+
+### ⚖️ Legal Validation
+
+- ✅ **Contracts** - Essential clauses verification
+- ⚖️ **Judgments** - Valid judicial structure  
+- 📜 **Regulations** - Correct regulatory format
+
+---
+
+## 💡 **Differentiating Features**
+
+🔥 **Unique Characteristics:**
+
+- 🔗 **Mini Blockchain** - Immutable history with chained hash
+- 🤖 **Specialized AI** - Models trained for legal documents
+- 🏛️ **LexNet Integration** - Simulated export to judicial systems
+- 📊 **Control Room** - Executive dashboard with ROI metrics
+- 🔍 **Semantic Search** - Intelligent content analysis
 
 ---
 
 ## 🧪 **Testing**
 
-Ejecutar tests completos:
+Run complete tests:
 
 ```bash
-# Todos los tests
+# All tests
 python -m pytest test/
 
-# Test específico
+# Specific test
 python -m pytest test/test_classification.py -v
 
-# Cobertura
+# Coverage
 python -m pytest --cov=app test/
 ```
 
-### 📋 Cobertura de Tests
+### 📋 Test Coverage
 
-- ✅ Extracción de texto (`extract_text_from_file()`)
-- ✅ Clasificación NLP (`classify_text()`)  
-- ✅ Validación de cumplimiento
-- ✅ Seguridad y cifrado
+- ✅ Text extraction (`extract_text_from_file()`)
+- ✅ NLP classification (`classify_text()`)  
+- ✅ Compliance validation
+- ✅ Security and encryption
 - ✅ Audit trail
 
 ---
 
-## 🚀 **Demo Rápida**
+## 🚀 **Quick Demo**
 
-### 1. Cargar datos de demostración
+### 1. Load demo data
 ```bash
 curl -X POST http://localhost:8000/load_demo/
 ```
 
-### 2. Subir un documento
+### 2. Upload a document
 ```bash
 curl -X POST "http://localhost:8000/upload_document/" \
-  -F "file=@documento.pdf"
+  -F "file=@document.pdf"
 ```
 
-### 3. Listar documentos
+### 3. List documents
 ```bash
 curl http://localhost:8000/list_documents/
 ```
 
-### 4. Buscar por término
+### 4. Search by term
 ```bash
-curl "http://localhost:8000/search_documents/?query=contrato"
+curl "http://localhost:8000/search_documents/?query=contract"
 ```
 
 ---
 
-## 📄 **Licencia**
+## 🤝 **Contribute**
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+1. 🍴 **Fork** the project
+2. 🌿 **Create** your feature branch (`git checkout -b feature/AmazingFeature`)
+3. 💾 **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. 📤 **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. 🔃 **Open** a Pull Request
 
 ---
 
 <div align="center">
 
-**⭐ Si te ha sido útil, ¡dale una estrella al repo! ⭐**
+**⭐ If it has been useful, give the repo a star! ⭐**
 
-*Desarrollado con ❤️ para la comunidad legal*
+*Developed with ❤️ for the legal community*
 
 </div>
