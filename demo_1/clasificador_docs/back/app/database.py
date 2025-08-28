@@ -72,11 +72,3 @@ class Database:
         finally:
             conn.close()
 
-
-# Prueba rápida
-if __name__ == "__main__":
-    db = Database()
-    db.insert_document("Documento de prueba", "Este es un texto de prueba.", "Otros")
-    docs = db.get_documents()
-    for d in docs:
-        print(d)

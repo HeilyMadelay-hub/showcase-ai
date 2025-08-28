@@ -1,9 +1,7 @@
 # Módulo de clasificación de documentos
 
 class DocumentClassifier:
-
-    LEGAL_CATEGORIES = ["Contratos", "Sentencias", "Normativas", "Licencias", "Otros"]
-
+    
     def __init__(self):
         self.model = None
     

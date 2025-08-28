@@ -62,10 +62,3 @@ class DemoDataset:
     def get_documents(self):
         return self.documents
 
-
-# Prueba rápida
-if __name__ == "__main__":
-    demo = DemoDataset()
-    demo.load_demo_data()
-    for doc in demo.get_documents():
-        print(f"{doc['title']} ({doc['category']}): {doc['text'][:60]}...")
