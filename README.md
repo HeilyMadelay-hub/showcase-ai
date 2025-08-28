@@ -1,46 +1,142 @@
-Showcase-AI ⚖️🤖
+# Showcase-AI ⚖️🤖
 
-Next-generation AI demos for the legal industry.
+<div align="center">
 
-This repository brings together a collection of AI-powered prototypes built to transform the way legal professionals work.
-Each demo is designed to be practical, fast to test, and directly applicable to real-world legal workflows.
+**Next-generation AI demos for the legal industry**
 
-📂 Branches and Demos
+*Transform the way legal professionals work with cutting-edge AI solutions*
 
-demo_1_clasificador_docs → Instantly classify legal documents (contracts, rulings, regulations, and more).
+![Legal AI](https://img.shields.io/badge/Legal%20AI-Powered-blue?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.10+-green?style=for-the-badge&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-Modern-teal?style=for-the-badge&logo=fastapi)
 
-demo_2_redaccion_contratos → An AI assistant for drafting contracts: generate, refine, and strengthen legal clauses in seconds.
+---
 
-demo_3_buscador_sentencias → A semantic search engine that retrieves the most relevant legal rulings based on natural language queries.
+</div>
 
-🚀 Why this matters
+## 🎯 **About This Project**
 
-Legal work is time-consuming, repetitive, and detail-heavy.
-With these demos you will see how AI can:
+This repository brings together a collection of **AI-powered prototypes** built to transform the way legal professionals work. Each demo is designed to be:
 
-✅ Save hours of manual review
-✅ Improve accuracy and consistency in documents
-✅ Unlock powerful insights from unstructured legal texts
+- 🚀 **Practical** - Ready for real-world application
+- ⚡ **Fast to test** - Quick setup and immediate results  
+- 🎪 **Demo-ready** - Perfect for showcasing capabilities
 
-This is not theory — these are hands-on demos you can run today.
+---
 
-🛠️ Tech Stack
+## 📂 **Available Demos**
 
-Python 3.10+
+| Demo | Branch | Description |
+|------|--------|-------------|
+| 📄 **Document Classifier** | `demo_1_clasificador_docs` | Instantly classify legal documents (contracts, rulings, regulations, and more) |
+| ✍️ **Contract Assistant** | `demo_2_redaccion_contratos` | AI assistant for drafting contracts: generate, refine, and strengthen legal clauses in seconds |
+| 🔍 **Semantic Search** | `demo_3_buscador_sentencias` | Retrieve the most relevant legal rulings based on natural language queries |
 
-FastAPI (modern, fast API layer)
+---
 
-Transformers & NLP (Hugging Face, Scikit-learn)
+## 🚀 **Why This Matters**
 
-PyMuPDF, python-docx, Tesseract (document parsing & OCR)
+<div align="center">
 
-SQLite / JSON (lightweight storage for prototypes)
+### Legal work is time-consuming, repetitive, and detail-heavy
 
-👤 Author
+</div>
 
-Created and maintained by HeilyMadelay-hub and diegoguaman to showcase AI capabilities for potential clients.
+**With these demos you will see how AI can:**
 
-If you’re interested in custom legal AI solutions, feel free to connect and discuss tailored projects.
+✅ **Save hours** of manual document review  
+✅ **Improve accuracy** and consistency in legal documents  
+✅ **Unlock powerful insights** from unstructured legal texts  
+✅ **Accelerate workflows** for legal professionals  
 
-⚡ Ready to see how AI can revolutionize legal workflows?
-Clone this repo, switch to a demo branch, and start testing 🚀
+> 💡 **This is not theory** — these are hands-on demos you can run today.
+
+---
+
+## 🛠️ **Tech Stack**
+
+<div align="center">
+
+| Category | Technologies |
+|----------|-------------|
+| **Core** | ![Python](https://img.shields.io/badge/Python-3.10+-3776ab?style=flat&logo=python&logoColor=white) |
+| **API** | ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white) |
+| **AI/ML** | ![Transformers](https://img.shields.io/badge/🤗_Transformers-FFD21E?style=flat) ![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=flat&logo=scikit-learn&logoColor=white) |
+| **Document Processing** | ![PyMuPDF](https://img.shields.io/badge/PyMuPDF-red?style=flat) ![python-docx](https://img.shields.io/badge/python--docx-blue?style=flat) ![Tesseract](https://img.shields.io/badge/Tesseract_OCR-green?style=flat) |
+| **Storage** | ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat&logo=sqlite&logoColor=white) ![JSON](https://img.shields.io/badge/JSON-000000?style=flat&logo=json&logoColor=white) |
+
+</div>
+
+---
+
+## 🚦 **Quick Start**
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/your-username/showcase-ai.git
+cd showcase-ai
+```
+
+### 2️⃣ Choose a demo
+```bash
+# For document classification
+git checkout demo_1_clasificador_docs
+
+# For contract assistance  
+git checkout demo_2_redaccion_contratos
+
+# For semantic search
+git checkout demo_3_buscador_sentencias
+```
+
+### 3️⃣ Follow branch-specific instructions
+Each demo branch contains its own README with detailed setup and usage instructions.
+
+---
+
+## 👥 **Authors**
+
+<div align="center">
+
+**Created and maintained by:**
+
+🔸 **Heily Madelay**  
+🔸 **Diego Guaman**
+
+*Showcasing AI capabilities for potential clients and the legal community*
+
+</div>
+
+---
+
+## 🤝 **Interested in Custom Solutions?**
+
+<div align="center">
+
+**Looking for tailored legal AI solutions?**
+
+We specialize in building custom AI applications for law firms and legal departments.
+
+[📧 **Get in Touch**](#) | [💼 **View Portfolio**](#) | [📅 **Schedule Demo**](#)
+
+</div>
+
+---
+
+## ⚡ **Ready to Revolutionize Legal Workflows?**
+
+<div align="center">
+
+**Don't just read about it — experience it yourself!**
+
+```bash
+git clone https://github.com/your-username/showcase-ai.git
+```
+
+**Choose your demo → Test it out → See the future of legal work** 🚀
+
+---
+
+*Made with ❤️ for the legal community*
+
+</div>
