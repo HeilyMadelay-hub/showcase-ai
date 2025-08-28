@@ -1,110 +1,145 @@
-📄 Clasificador de Documentos Legales
+# 📄 Clasificador de Documentos Legales
 
-Sistema profesional para subir, clasificar y auditar documentos legales, combinando NLP (Hugging Face), cumplimiento normativo, audit trail y seguridad con cifrado.
-Ideal para demostraciones de proyectos legales o pruebas de concepto para despachos o tribunales.
+<div align="center">
 
-🛠️ Requisitos
+![Python](https://img.shields.io/badge/python-v3.10+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Status](https://img.shields.io/badge/status-demo-orange.svg)
 
-Python 3.10+
+**Sistema profesional para subir, clasificar y auditar documentos legales**
 
-pip
+*Combinando NLP (Hugging Face), cumplimiento normativo, audit trail y seguridad con cifrado*
 
-Sistema operativo: Windows / Mac / Linux
+[Instalación](#-instalación) • [Demo](#-demo-rápida) • [Documentación](#-documentación-api) • [Contribuir](#-contribuir)
 
-Dependencias principales:
+</div>
 
-fastapi
-uvicorn[standard]
-transformers
-torch
-PyMuPDF
-docx2txt
-sqlite-utils
+---
 
-📁 Estructura del proyecto
+## 🎯 **Características Principales**
+
+- 🤖 **Clasificación Inteligente** - NLP con modelos de Hugging Face
+- 🔒 **Seguridad Avanzada** - Cifrado AES-256 y control de roles  
+- 📋 **Cumplimiento Normativo** - Validación automática de documentos
+- 🔍 **Audit Trail Completo** - Trazabilidad con hash encadenado
+- 🌐 **Interfaz Web Moderna** - Dashboard responsive y intuitivo
+- ⚡ **API REST** - Endpoints robustos para integraciones
+
+---
+
+## 🛠️ **Requisitos del Sistema**
+
+| Componente | Versión Requerida |
+|------------|-------------------|
+| **Python** | 3.10+ |
+| **Pip** | Última versión |
+| **SO** | Windows / macOS / Linux |
+
+### 📦 Dependencias Principales
+
+```bash
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+transformers>=4.35.0
+torch>=2.1.0
+PyMuPDF>=1.23.0
+docx2txt>=0.8
+sqlite-utils>=3.35.0
+```
+
+---
+
+## 📁 **Arquitectura del Proyecto**
+
+```
 clasificador_docs/
-├── back/
+├── 🖥️ back/                          # Backend FastAPI
 │   ├── app/
-│   │   ├── audit/                      # Audit trail con hashes
+│   │   ├── 📊 audit/                 # Sistema de auditoría
 │   │   │   └── audit_trail.py
-│   │   ├── classification.py           # Clasificación NLP
-│   │   ├── compliance/                 # Validación de documentos
+│   │   ├── 🧠 classification.py      # Motor NLP
+│   │   ├── ⚖️ compliance/            # Validación legal
 │   │   │   └── compliance_engine.py
-│   │   ├── constants.py                # Constantes y configuración
-│   │   ├── database.py                 # Conexión SQLite
-│   │   ├── demo_dataset.py             # Dataset demo
-│   │   ├── ingestion.py                # Extracción de texto
-│   │   ├── integration/                # Exportaciones a sistemas externos
+│   │   ├── ⚙️ constants.py           # Configuración
+│   │   ├── 💾 database.py            # Conexión SQLite
+│   │   ├── 📝 demo_dataset.py        # Datos de prueba
+│   │   ├── 📄 ingestion.py           # Extracción de texto
+│   │   ├── 🔗 integration/           # Exportaciones
 │   │   │   └── export_lexnet.py
-│   │   ├── main.py                     # Endpoints FastAPI
-│   │   ├── search.py                   # Búsqueda y listado
-│   │   ├── security/                   # Cifrado y roles
-│   │   │   ├── encryption.py
-│   │   │   └── roles.py
-│   │   └── __init__.py
-│   ├── uploads/                        # Archivos subidos
-│   ├── documents.db                    # Base de datos SQLite
-│   ├── README.md
-│   └── requirements.txt
-├── front/
+│   │   ├── 🚀 main.py                # API endpoints
+│   │   ├── 🔍 search.py              # Motor búsqueda
+│   │   └── 🔐 security/              # Seguridad
+│   │       ├── encryption.py
+│   │       └── roles.py
+│   ├── 📤 uploads/                   # Archivos subidos
+│   └── 💾 documents.db               # Base de datos
+├── 🌐 front/                         # Frontend web
 │   └── static/
-│       ├── index.html                  # Interfaz web
-│       ├── script.js                   # JS de interacción
-│       └── style.css                   # Estilos
-├── test/                               # Tests unitarios
-│   ├── test_audit.py
-│   ├── test_classification.py
-│   ├── test_compliance.py
-│   ├── test_ingestion.py
-│   └── test_security.py
-└── run_demo.py                         # Script principal de demo
+│       ├── index.html
+│       ├── script.js
+│       └── style.css
+├── 🧪 test/                          # Tests unitarios
+└── ▶️ run_demo.py                    # Ejecutor de demo
+```
 
-⚡ Instalación
+---
 
-Clonar el repositorio:
+## ⚡ **Instalación Rápida**
 
+### 1️⃣ Clonar repositorio
+```bash
 git clone https://github.com/tuusuario/clasificador_docs.git
 cd clasificador_docs/back
+```
 
-
-Crear y activar entorno virtual:
-
+### 2️⃣ Crear entorno virtual
+```bash
 python -m venv .venv
+
 # Windows
 .venv\Scripts\activate
-# Mac/Linux
+
+# macOS/Linux  
 source .venv/bin/activate
+```
 
-
-Instalar dependencias:
-
+### 3️⃣ Instalar dependencias
+```bash
 pip install -r requirements.txt
+```
 
-
-Ejecutar servidor FastAPI:
-
+### 4️⃣ Ejecutar servidor
+```bash
 python -m uvicorn app.main:app --reload
+```
 
-🚀 Endpoints
-1. POST /load_demo/
+🎉 **¡Listo!** Accede a: `http://localhost:8000`
 
-Carga 10 documentos demo en la base de datos.
+---
 
-Respuesta:
+## 📚 **Documentación API**
 
-{
-  "success": true,
-  "documents_loaded": 10
-}
+### 🔗 Endpoints Disponibles
 
-2. POST /upload_document/
+| Método | Endpoint | Descripción | Parámetros |
+|--------|----------|-------------|------------|
+| `POST` | `/load_demo/` | Carga dataset de demostración | - |
+| `POST` | `/upload_document/` | Sube y clasifica documento | `file` (PDF/TXT) |
+| `GET` | `/list_documents/` | Lista documentos | `category` (opcional) |
+| `GET` | `/search_documents/` | Busca en documentos | `query` (requerido) |
 
-Sube un documento y devuelve categoría y score.
+### 📤 **Subir Documento**
 
-Parametros: archivo (pdf o txt)
+**Request:**
+```bash
+POST /upload_document/
+Content-Type: multipart/form-data
+file: [archivo.pdf]
+```
 
-Respuesta:
-
+**Response:**
+```json
 {
   "success": true,
   "document_id": 1,
@@ -119,90 +154,150 @@ Respuesta:
   "compliance_status": "✅",
   "hash_integrity": "abc123..."
 }
+```
 
-3. GET /list_documents/
+### 📋 **Listar Documentos**
 
-Lista todos los documentos o filtra por categoría.
+```bash
+GET /list_documents/?category=contrato
+```
 
-Ejemplo:
+### 🔍 **Buscar Documentos**
 
-/list_documents/?category=contrato
+```bash
+GET /search_documents/?query=firma
+```
 
-4. GET /search_documents/?query=
+---
 
-Búsqueda por palabra clave en los documentos.
+## 🔄 **Flujo del Sistema**
 
-Ejemplo:
+```mermaid
+graph TD
+    A[👤 Usuario sube documento] --> B[📄 ingestion.py - Extrae texto]
+    B --> C[🧠 classification.py - Clasifica con NLP]  
+    C --> D[⚖️ compliance_engine.py - Valida requisitos]
+    D --> E[🔐 encryption.py - Cifra y guarda]
+    E --> F[📊 audit_trail.py - Registra con hash]
+    F --> G[💾 database.py - Guarda en SQLite]
+    G --> H[🔗 export_lexnet.py - Exporta]
+    H --> I[🌐 Frontend - Muestra resultados]
+```
 
-/search_documents/?query=firma
+---
 
-🧾 Flujo del sistema
-Usuario sube documento
-   ↓
-ingestion.py → extrae texto
-   ↓
-classification.py → clasifica con NLP
-   ↓
-compliance_engine.py → valida requisitos legales
-   ↓
-encryption.py → cifra y guarda
-   ↓
-audit_trail.py → registra con hash
-   ↓
-database.py → guarda en SQLite
-   ↓
-export_lexnet.py → simula exportación externa
-   ↓
-Frontend → muestra categoría, hash y estado de cumplimiento
+## 🌐 **Frontend Características**
 
-🌐 Frontend
+- ✨ **Interfaz Moderna** - Diseño responsivo y intuitivo
+- 📊 **Dashboard Interactivo** - Métricas en tiempo real  
+- 🔍 **Filtros Avanzados** - Búsqueda y ordenamiento
+- 📈 **Indicadores Visuales** - Estados de cumplimiento
+- 🔒 **Control de Acceso** - Permisos por rol de usuario
+- 📤 **Exportación** - Integración con sistemas externos
 
-Subida de documentos con indicador de carga.
+---
 
-Tabla de resultados filtrable y ordenable.
+## 🔒 **Seguridad y Cumplimiento**
 
-Estado de cumplimiento legal y hash de integridad.
+### 🛡️ Medidas de Seguridad
 
-Exportación simulada a sistemas externos.
+| Característica | Implementación |
+|----------------|----------------|
+| **Cifrado** | AES-256 para archivos |
+| **Control de Acceso** | Roles: Auditor Senior/Junior, Usuario |
+| **Audit Trail** | Hash encadenado (blockchain-style) |
+| **Integridad** | Verificación SHA-256 |
 
-Historial de acciones y mini dashboard con ROI y seguridad.
+### ⚖️ Validación Legal
 
-🔒 Seguridad
+- ✅ **Contratos** - Verificación de cláusulas esenciales
+- ⚖️ **Sentencias** - Estructura judicial válida  
+- 📜 **Normativas** - Formato regulatorio correcto
 
-Archivos cifrados AES-256.
+---
 
-Roles: auditor senior, auditor junior, usuario.
+## 💡 **Extras Diferenciales**
 
-Solo usuarios con permisos pueden ver texto completo.
+🔥 **Características Únicas:**
 
-💡 Extras diferenciales
+- 🔗 **Mini Blockchain** - Historial inmutable con hash encadenado
+- 🤖 **IA Especializada** - Modelos entrenados para documentos legales
+- 🏛️ **Integración LexNet** - Exportación simulada a sistemas judiciales
+- 📊 **Control Room** - Dashboard ejecutivo con métricas ROI
+- 🔍 **Búsqueda Semántica** - Análisis de contenido inteligente
 
-Historial de acciones con hash encadenado (mini blockchain).
+---
 
-Validación de cumplimiento normativo (contratos, sentencias, etc.).
+## 🧪 **Testing**
 
-Exportación simulada a LexNet o gestor documental externo.
+Ejecutar tests completos:
 
-Dashboard de control "mini control room".
+```bash
+# Todos los tests
+python -m pytest test/
 
-✅ Tests
+# Test específico
+python -m pytest test/test_classification.py -v
 
-extract_text_from_file()
+# Cobertura
+python -m pytest --cov=app test/
+```
 
-classify_text()
+### 📋 Cobertura de Tests
 
-Validación de carga y búsqueda.
+- ✅ Extracción de texto (`extract_text_from_file()`)
+- ✅ Clasificación NLP (`classify_text()`)  
+- ✅ Validación de cumplimiento
+- ✅ Seguridad y cifrado
+- ✅ Audit trail
 
-📄 Demo rápida
-# Cargar dataset demo
+---
+
+## 🚀 **Demo Rápida**
+
+### 1. Cargar datos de demostración
+```bash
 curl -X POST http://localhost:8000/load_demo/
+```
 
-# Subir documento
+### 2. Subir un documento
+```bash
 curl -X POST "http://localhost:8000/upload_document/" \
-     -F "file=@documento.pdf"
+  -F "file=@documento.pdf"
+```
 
-# Listar documentos
+### 3. Listar documentos
+```bash
 curl http://localhost:8000/list_documents/
+```
 
-# Buscar por término
-curl http://localhost:8000/search_documents/?query=contrato
+### 4. Buscar por término
+```bash
+curl "http://localhost:8000/search_documents/?query=contrato"
+```
+
+---
+
+## 🤝 **Contribuir**
+
+1. 🍴 **Fork** el proyecto
+2. 🌿 **Crea** tu feature branch (`git checkout -b feature/AmazingFeature`)
+3. 💾 **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. 📤 **Push** a la branch (`git push origin feature/AmazingFeature`)
+5. 🔃 **Abre** un Pull Request
+
+---
+
+## 📄 **Licencia**
+
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+
+---
+
+<div align="center">
+
+**⭐ Si te ha sido útil, ¡dale una estrella al repo! ⭐**
+
+*Desarrollado con ❤️ para la comunidad legal*
+
+</div>
