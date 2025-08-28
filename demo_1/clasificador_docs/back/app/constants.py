@@ -1,7 +1,9 @@
 # constants.py
+
+# 📑 Categorías legales principales
 LEGAL_CATEGORIES = [
     "contrato",
-    "factura", 
+    "factura",
     "demanda",
     "escritura",
     "testamento",
@@ -12,9 +14,10 @@ LEGAL_CATEGORIES = [
     "sentencia"
 ]
 
-# Configuración del modelo
-MODEL_NAME = "facebook/bart-large-mnli"
-CONFIDENCE_THRESHOLD = 0.4
+# ⚙️ Configuración del modelo
+MODEL_NAME = "BAAI/bge-small-en-v1.5"  # Modelo SetFit (rápido y preciso)
+CONFIDENCE_THRESHOLD = 0.5            # Ajustamos a 0.5 porque SetFit es más robusto
+
 
 """
 
