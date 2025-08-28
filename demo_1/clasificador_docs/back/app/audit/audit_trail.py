@@ -1,0 +1,1 @@
+#  trazabilidad (audit trail). Hash inmutable estilo blockchain
