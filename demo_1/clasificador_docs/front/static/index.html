@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clasificador de documentos legales — Demo</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="container">
+    <h1>Clasificador de documentos legales</h1>
+    <p class="subtitle">Sube un documento, clasifícalo y busca entre los ya cargados.</p>
+  </header>
+
+  <main class="container grid">
+    <!-- Tarjeta: Subida -->
+    <section class="card">
+      <h2>1) Subir y clasificar</h2>
+      <form id="uploadForm" class="row gap">
+        <input type="file" id="fileInput" accept=".pdf,.docx,.txt" required />
+        <button class="btn" type="submit">Subir</button>
+        <span id="uploadStatus" class="muted" aria-live="polite"></span>
+      </form>
+      <div id="uploadResult" class="pill-area"></div>
+    </section>
+
+    <!-- Tarjeta: Búsqueda -->
+    <section class="card">
+      <h2>2) Buscar en documentos</h2>
+      <div class="row gap">
+        <input id="searchInput" type="text" placeholder="Escribe un término (ej. 'cláusula')" />
+        <button id="searchBtn" class="btn btn-secondary">Buscar</button>
+      </div>
+      <small class="muted">La búsqueda es de texto libre en el contenido.</small>
+    </section>
+
+    <!-- Tarjeta: Filtro -->
+    <section class="card">
+      <h2>3) Filtrar por categoría</h2>
+      <div class="row gap">
+        <select id="categorySelect">
+          <option value="">Todas</option>
+          <option>Contratos</option>
+          <option>Sentencias</option>
+          <option>Normativas</option>
+          <option>Licencias</option>
+          <option>Otros</option>
+        </select>
+        <button id="listBtn" class="btn btn-secondary">Listar</button>
+        <button id="loadDemoBtn" class="btn btn-ghost">Cargar dataset demo</button>
+      </div>
+    </section>
+
+    <!-- Tarjeta: Resultados -->
+    <section class="card col-span-2">
+      <div class="row between">
+        <h2>Resultados</h2>
+        <span id="countBadge" class="badge">0</span>
+      </div>
+      <div class="table-wrap">
+        <table id="resultsTable">
+          <thead>
+            <tr><th>ID</th><th>Título</th><th>Categoría</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty hidden">
+        <p>Sin resultados todavía. Carga el dataset demo, lista por categoría o realiza una búsqueda.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <small class="muted">Demo UI — HTML • CSS • JS vainilla. Luego conectamos al backend FastAPI.</small>
+  </footer>
+
+  <div id="toaster" class="toaster" aria-live="polite"></div>
+  <script src="./script.js"></script>
+</body>
+</html>
