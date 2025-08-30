@@ -10,21 +10,32 @@
   <header class="container">
     <h1>Clasificador de documentos legales</h1>
     <p class="subtitle">Sube un documento, clasifícalo y busca entre los ya cargados.</p>
+
+    <!-- Indicador de a qué API apunta el front (para saber si estamos conectados) -->
+    <small class="muted">API: <span id="apiUrl">—</span></small>
   </header>
 
+  <!-- Contenedor de notificaciones "toast" -->
+  <div id="toaster" class="toaster" aria-live="polite"></div>
+  <!-- Banner de error visible para el usuario -->
+  <div id="errorBox" class="toast err" style="display:none; max-width:1100px; margin:0 auto;"></div>
+
+
   <main class="container grid">
-    <!-- Tarjeta: Subida -->
+    <!-- Tarjeta: Subida (consume POST /upload_document/) -->
     <section class="card">
       <h2>1) Subir y clasificar</h2>
       <form id="uploadForm" class="row gap">
         <input type="file" id="fileInput" accept=".pdf,.docx,.txt" required />
-        <button class="btn" type="submit">Subir</button>
+        <button id="uploadBtn" class="btn" type="submit">Subir</button>
         <span id="uploadStatus" class="muted" aria-live="polite"></span>
       </form>
+
+      <!-- Aquí se pinta la categoría devuelta por el back tras subir (viene en la respuesta de POST /upload_document/) -->
       <div id="uploadResult" class="pill-area"></div>
     </section>
 
-    <!-- Tarjeta: Búsqueda -->
+    <!-- Tarjeta: Búsqueda (consume GET /search_documents/?query=&category=&page=&page_size=) -->
     <section class="card">
       <h2>2) Buscar en documentos</h2>
       <div class="row gap">
@@ -34,29 +45,34 @@
       <small class="muted">La búsqueda es de texto libre en el contenido.</small>
     </section>
 
-    <!-- Tarjeta: Filtro -->
+    <!-- Tarjeta: Filtro (consume GET /list_documents/?category=&page=&page_size= y POST /load_demo/) -->
     <section class="card">
       <h2>3) Filtrar por categoría</h2>
       <div class="row gap">
         <select id="categorySelect">
           <option value="">Todas</option>
-          <option>Contratos</option>
-          <option>Sentencias</option>
-          <option>Normativas</option>
-          <option>Licencias</option>
-          <option>Otros</option>
+          <option value="contrato">Contratos</option>
+          <option value="sentencia">Sentencias</option>
+          <option value="normativa">Normativas</option>
+          <option value="licencia">Licencias</option>
+          <option value="laboral">Laboral</option>
+          <option value="auto_resolucion">Otros</option>
         </select>
         <button id="listBtn" class="btn btn-secondary">Listar</button>
+        <!-- Este botón dispara POST /load_demo/ para precargar datos -->
         <button id="loadDemoBtn" class="btn btn-ghost">Cargar dataset demo</button>
       </div>
     </section>
 
-    <!-- Tarjeta: Resultados -->
+    <!-- Resultados (se rellenan con la respuesta de GET /list_documents/ o GET /search_documents/) -->
     <section class="card col-span-2">
       <div class="row between">
         <h2>Resultados</h2>
+        <!-- Este badge se actualiza con el total devuelto por el back (propiedad total) -->
         <span id="countBadge" class="badge">0</span>
       </div>
+
+      <!-- La tabla se pinta con los campos id, title y category de cada documento devuelto por la API -->
       <div class="table-wrap">
         <table id="resultsTable">
           <thead>
@@ -65,6 +81,8 @@
           <tbody></tbody>
         </table>
       </div>
+
+       <!-- Estado vacío cuando no hay resultados -->
       <div id="emptyState" class="empty hidden">
         <p>Sin resultados todavía. Carga el dataset demo, lista por categoría o realiza una búsqueda.</p>
       </div>
@@ -75,7 +93,7 @@
     <small class="muted">Demo UI — HTML • CSS • JS vainilla. Luego conectamos al backend FastAPI.</small>
   </footer>
 
-  <div id="toaster" class="toaster" aria-live="polite"></div>
+  
   <script src="./script.js"></script>
 </body>
 </html>
