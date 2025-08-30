@@ -241,34 +241,3 @@ class DocumentIngestion:
                 success=False,
                 error_message=f"Error general procesando archivo: {str(e)}"
             )
-    
-    def ingest_document(self, file_path: str) -> ExtractionResult:
-        """
-        Procesa e ingiere un documento completo
-        
-        Args:
-            file_path: Ruta al archivo a procesar
-            
-        Returns:
-            ExtractionResult con el resultado del procesamiento
-        """
-        try:
-            # Extraer texto del documento
-            result = self.extract_text_from_file(file_path)
-            
-            if result.success:
-                logger.info(f"Documento ingestado exitosamente: {file_path}")
-                # Aquí podrías agregar lógica adicional como:
-                # - Guardar en base de datos
-                # - Generar embeddings
-                # - Indexar para búsqueda
-                # - Etc.
-            
-            return result
-            
-        except Exception as e:
-            logger.error(f"Error ingiriendo documento {file_path}: {str(e)}")
-            return ExtractionResult(
-                success=False,
-                error_message=f"Error en ingesta de documento: {str(e)}"
-            )
