@@ -1,1 +1,0 @@
-#  simulación de integraciones externas. Simula exportar documentos legales

@@ -1,107 +1,234 @@
 # classification.py
 import logging
-from setfit import SetFitModel
-from constants import LEGAL_CATEGORIES
+from typing import List
 
-# Cargamos un modelo SetFit preentrenado (rápido y fácil de usar)
-try:
-    model = SetFitModel.from_pretrained("BAAI/bge-small-en-v1.5") #from_pretrained(...) carga un modelo que ya ha sido entrenado en un corpus grande.
-    """
-    La mayoría de tareas de NLP usan transfer learning: 
-    cargas un modelo ya entrenado y luego lo ajustas a tu problema
-    (fine-tuning) o lo usas tal cual (zero-shot).
+CATEGORY_KEYWORDS = {
 
-    Así obtienes resultados decentes con pocos datos y latencia baja.
+    "contrato": [
+        "contrato", "partes", "cláusula", "firmas", "objeto del contrato",
+        "duración", "resolución", "obligaciones", "acuerdo", "vigencia",
+        "condiciones contractuales", "incumplimiento", "firma de aceptación",
+        "modificación", "terminación anticipada", "renuncia", "responsabilidad",
+        "anexo", "sujeto a", "ejecución", "penalización", "cláusula penal",
+        "pactos", "manifiestan", "reunidos", "precio", "transmisión",
+        "contraprestación", "cumplimiento", "garantías", "indemnización"
+    ],
     
-    En este caso, lo que estás haciendo con SetFit es un tipo de fine-tuning muy ligero:
+    "contrato_traspaso": [  # Nueva categoría específica
+        "traspaso", "negocio en funcionamiento", "fondo de comercio",
+        "local de negocio", "transmisión de bienes", "precio del traspaso",
+        "actividad económica", "explotación económica", "titular de actividad",
+        "carta de pago", "bienes transmitidos", "metros cuadrados"
+    ],
+    
+    "contrato_arrendamiento": [  # Nueva categoría
+        "arrendamiento", "arrendador", "arrendatario", "renta mensual",
+        "fianza", "duración del arrendamiento", "uso de vivienda",
+        "gastos de comunidad", "suministros", "prórroga", "desahucio",
+        "actualización de renta", "obras", "conservación"
+    ],
+    
+    "contrato_compraventa": [  # Nueva categoría
+        "compraventa", "vendedor", "comprador", "precio de venta",
+        "cosa vendida", "entrega", "saneamiento", "vicios ocultos",
+        "escritura de compraventa", "posesión", "tradición",
+        "reserva de dominio", "pacto de retro"
+    ],
+    
+    "escritura_publica": [  # Renombrada para mayor claridad
+        "escritura pública", "notario", "protocolo", "fe pública",
+        "comparecencia", "otorgamiento", "testimonio", "matriz",
+        "número de protocolo", "libro de protocolo", "legitimación",
+        "apostilla", "legalización", "copia autorizada", "inscripción registral",
+        "registro de la propiedad", "folio", "tomo"
+    ],
+    
+    "factura": [
+        "factura", "importe", "folio", "RFC emisor", "RFC receptor",
+        "total", "IVA", "concepto", "fecha de emisión", "forma de pago",
+        "detalle de productos", "descuento", "subtotal", "base gravable",
+        "retenciones", "comprobante", "número de serie", "fecha de recepción",
+        "pago parcial", "condiciones de pago", "CFDI", "UUID",
+        "sello digital", "cadena original", "certificado SAT"
+    ],
+    
+    "acta": [
+        "acta", "asistentes", "orden del día", "acuerdos",
+        "aprobación", "firma", "constancia", "sesión", "reunión",
+        "presidencia", "votación", "decisiones", "participantes", "lectura",
+        "firmas de conformidad", "resoluciones adoptadas", "verificación de quorum",
+        "convocatoria", "moción", "deliberación", "unanimidad", "mayoría"
+    ],
 
-    Cargas un modelo preentrenado de embeddings (BAAI/bge-small-en-v1.5).
+   "poder_notarial": [
+        # Términos esenciales
+        "poder notarial",      # Indica el tipo de documento
+        "apoderado",           # Persona que recibe el poder
+        "facultades",          # Capacidades conferidas
+        "representación",      # Acción de actuar en nombre del poderdante
+        "actuar en mi nombre", # Frase típica de poderes
+        "revocación",          # Posibilidad de revocar el poder
+        "ratificación",        # Aceptación formal de los poderes otorgados
+        "vigencia",            # Duración del poder
+        "firma",               # Firma del poderdante
+        "aceptación",          # Aceptación del apoderado
+        "limitaciones",        # Límites de los poderes conferidos
+        "documentos",          # Lo que puede firmar o presentar
+        "contratos",           # Tipo de actos permitidos
+        "actos administrativos" # Ámbito de actuación más común
+    ],
+    
+    "estado_financiero": [
+        "activo", "pasivo", "patrimonio", "ejercicio fiscal",
+        "balance general", "estado de resultados", "flujo de efectivo",
+        "ingresos", "gastos", "capital contable", "cuentas por cobrar",
+        "cuentas por pagar", "reservas", "depreciación", "amortización",
+        "utilidad neta", "EBITDA", "razones financieras", "notas a los estados"
+    ],
+    
+    "declaracion_fiscal": [  # Sin tilde para evitar problemas de encoding
+        "RFC", "ejercicio fiscal", "ingresos acumulables", "declaración",
+        "deducciones autorizadas", "impuesto causado", "presentación", 
+        "pago provisional", "saldo a favor", "compensación",
+        "retenciones", "IVA", "ISR", "comprobantes fiscales", 
+        "declaración anual", "declaración mensual", "DIOT", "DIM"
+    ],
+    
+    "dictamen_fiscal": [  # Nueva categoría
+        "dictamen fiscal", "contador público", "opinión", "estados financieros dictaminados",
+        "carta de presentación", "informe sobre la situación fiscal",
+        "anexos del dictamen", "contribuciones", "cumplimiento de obligaciones",
+        "salvedades", "abstención de opinión", "opinión negativa"
+    ],
+    
+    "resolucion_administrativa": [  # Categoría más específica
+        "resolución", "autoridad administrativa", "fundamentos legales", 
+        "considerandos", "resuelve", "notifíquese", "recurso administrativo",
+        "plazo para impugnar", "acto administrativo", "competencia",
+        "motivación", "fundamentación", "puntos resolutivos"
+    ],
+    
+    "sentencia_judicial": [
+        "sentencia", "tribunal", "fallo", "juez", "demandante",
+        "demandado", "resuelve", "juzgado", "autos", "parte actora",
+        "parte demandada", "resolución judicial", "apelación", "Sala", 
+        "casación", "STC", "Audiencia Provincial", "considerando",
+        "resultando", "vistos", "antecedentes de hecho", "fundamentos de derecho"
+    ],
 
-    Luego lo ajustas a tu problema de clasificación de documentos legales, usando las categorías definidas en LEGAL_CATEGORIES.
+    "sentencia_TC": [
+        "sentencia", "STC", "Sala", "considerando", "resultando", "vistos",
+        "antecedentes de hecho", "fundamentos de derecho", 
+        "vulneración del derecho", "recurrente", "órgano emisor",
+        "referencias a STC", "auto de admisión", "fallo constitucional"
+    ],
+    "auto_resolucion": [
+        "auto", "resolución", "notificación", "plazo", "competencia", 
+        "motivación", "fundamentación", "puntos resolutivos"
+    ],
+    
+    "informe_auditoria": [  # Sin tilde
+        "informe de auditoría", "alcance", "hallazgos", "opinión del auditor",
+        "revisión", "control interno", "observaciones", "recomendaciones",
+        "riesgos identificados", "materialidad", "evidencia de auditoría",
+        "procedimientos aplicados", "limitaciones al alcance", "carta de gerencia"
+    ],
+    "certificado": [
+        "certificado", "emisor", "destinatario", "validez", "autenticidad",
+        "vigencia", "sello", "documento oficial", "constancia",
+        "certificación oficial", "registro de validez", "autorización"
+    ],
+    "comprobante fiscal": [
+        "RFC emisor", "importe", "folio", "comprobante fiscal",
+        "detalle de impuestos", "concepto", "total", "fecha de emisión",
+        "forma de pago", "certificado digital", "sellos electrónicos"
+    ],
 
-    Esto no es un entrenamiento desde cero, sino transfer learning, donde el modelo ya conoce lenguaje general y solo se especializa en tu tarea específica.
-
-    Por eso obtienes:
-
-    Menor necesidad de datos: con unos pocos ejemplos puedes tener buena precisión.
-
-    Latencia baja: el modelo ya tiene embeddings listos.
-
-    Flexibilidad: puedes cambiar tus categorías sin entrenar un modelo completamente nuevo.
-        
-    """
-    logging.info("Modelo SetFit cargado correctamente")
-except Exception as e:
-    logging.error("No se pudo cargar el modelo SetFit", exc_info=True)
-    model = None
+    "sanción": [
+        "sanción", "autoridad", "infracción", "multa",
+        "penalización", "cumplimiento", "reglamento", "incumplimiento",
+        "advertencia", "responsabilidad", "sanción económica"
+    ],
+    "denuncia": [
+        "denuncia", "denunciante", "denunciado", "hechos",
+        "reclamación", "presentación formal", "investigación", "expediente",
+        "acusación", "procedimiento legal", "informe de hechos"
+    ],
+    "fiscal": [
+        "ingresos", "deducciones", "ejercicio fiscal",
+        "obligaciones fiscales", "impuesto", "declaración", "cumplimiento",
+        "retenciones", "pagos provisionales", "ajustes fiscales", "revisión"
+    ],
+    
+    "laboral": [
+        "acuerdo laboral",
+        "beneficios",
+        "colaborador",
+        "condiciones laborales",
+        "contrato laboral",
+        "contrato de trabajo",
+        "despido",
+        "empleado",
+        "empleador",
+        "fin de contrato",
+        "huelga",
+        "horario",
+        "jornada",
+        "licencia",
+        "modificación de contrato",
+        "pacto laboral",
+        "prestaciones",
+        "reglamento interno",
+        "remuneración",
+        "salario",
+        "sueldo",
+        "seguridad social",
+        "terminación de contrato",
+        "vacaciones",
+        "trabajador"
+    ],
+    "mercantil": [
+        "sociedad", "objeto social", "capital", "accionistas",
+        "asamblea", "estatutos", "participaciones", "acciones",
+        "fusiones", "disolución", "liquidación", "capital social",
+        "contratos mercantiles", "representante legal", "comercio"
+    ],
+    "cumplimiento normativo": [
+        "norma aplicable", "controles", "responsable de cumplimiento",
+        "auditoría", "procedimientos", "reglamento", "políticas internas",
+        "evaluación de riesgos", "reportes de cumplimiento",
+        "monitoreo", "verificación", "informes de cumplimiento"
+    ],
+}
 
 def classify_text(text: str) -> dict:
     """
-    Clasifica un texto en categorías legales usando SetFit.
-
-    Args:
-        text (str): Texto a clasificar.
-
-    Returns:
-        dict: {
-            'category': str,          # categoría más probable
-            'confidence': float,      # score de confianza de esa categoría
-            'all_scores': list        # lista [(categoría, score), ...]
-        }
+    Clasificación heurística basada en keywords.
+    No usa modelo de ML, útil para demo rápida.
     """
-    # Validamos que haya texto suficiente
     if not text or len(text.strip()) < 10:
         logging.warning("Texto demasiado corto para clasificación")
         return {"category": "unknown", "confidence": 0.0, "all_scores": []}
 
-    # Validamos que el modelo esté cargado para no llamarlo si no esta listo 
-    if model is None:
-        return {"category": "error", "confidence": 0.0, "all_scores": []}
+    scores = {}
+    text_lower = text.lower()
 
+    # Contar keywords encontradas por categoría
+    for category, keywords in CATEGORY_KEYWORDS.items():
+        match_count = sum(1 for kw in keywords if kw.lower() in text_lower)
+        scores[category] = match_count / len(keywords)  # porcentaje de coincidencias
 
+    # Ordenar por score descendente
+    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
-    """
-    Aquí usamos la función `predict_proba` del modelo SetFit para obtener la probabilidad de que un texto pertenezca a cada categoría legal definida en `LEGAL_CATEGORIES`. 
-    Aunque solo vamos a clasificar un único texto, `predict_proba` espera recibir una lista de textos, por eso pasamos `[text]`. 
-    El resultado es una lista de listas: cada sublista contiene los scores de cada categoría para un texto. Como solo tenemos un texto, accedemos al primer elemento con `[0]`. 
-    Luego usamos `zip` para emparejar cada categoría con su score correspondiente, generando una lista de tuplas `(categoría, score)` que podemos ordenar o procesar fácilmente para determinar la categoría más probable.
+    # Categoría con mayor score
+    top_category, top_score = sorted_scores[0]
 
-    Ejemplo práctico:
-    LEGAL_CATEGORIES = ["contrato", "factura", "demanda"]
-    text = "El acuerdo establece los términos de pago entre las partes."
+    if top_score == 0:
+        top_category = "sin clasificar"
 
-    scores = model.predict_proba([text])[0]
-    scores podría ser [0.85, 0.10, 0.05] indicando la probabilidad para cada categoría
-
-    all_scores = list(zip(LEGAL_CATEGORIES, scores))
-    all_scores será [('contrato', 0.85), ('factura', 0.10), ('demanda', 0.05)]
-    La categoría más probable es 'contrato' con score 0.85
-    """
-    try:
-        # Obtenemos los scores del modelo para cada categoría
-        scores = model.predict_proba([text])[0]
-
-        # Creamos una lista combinando categoría + score
-        all_scores = list(zip(LEGAL_CATEGORIES, scores))
-
-        # Ordenamos las categorías por score descendente
-        all_scores.sort(key=lambda x: x[1], reverse=True)
-
-        # Tomamos la categoría con más confianza
-        top_category, top_score = all_scores[0]
-
-        # Si el score es bajo, marcamos como "uncertain"
-        if top_score < 0.5:
-            logging.warning(f"Confianza baja: {top_category} ({top_score:.2f})")
-            top_category = "uncertain"
-
-        # Retornamos resultado
-        return {
-            "category": top_category,
-            "confidence": float(top_score),
-            "all_scores": [(cat, float(score)) for cat, score in all_scores]
-        }
-
-    except Exception as e:
-        logging.error("Error clasificando el texto", exc_info=True)
-        return {"category": "error", "confidence": 0.0, "all_scores": []}
+    return {
+        "category": top_category,
+        "confidence": float(top_score),
+        "all_scores": [(cat, float(score)) for cat, score in sorted_scores]
+    }
