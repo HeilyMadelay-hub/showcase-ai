@@ -99,29 +99,27 @@ def split_into_sentences(text: str) -> List[str]:
 def detect_patterns(sentence: str, patterns: List[str]) -> List[str]:
     return [pat for pat in patterns if re.search(pat, sentence, re.IGNORECASE)]
 
+
 def explain_with_context(text: str, category: str) -> ExplanationResult:
     rules_for_category = CATEGORY_KEYWORDS.get(category, [])
     hits, misses, sentence_scores, cited_articles = [], [], [], []
-    
+
     sentences = split_into_sentences(text)
-    
-    # Agrupamos frases contiguas que comparten patrones
+
     buffer = ""
     buffer_patterns = set()
-    
+
     for sentence in sentences:
         sentence_patterns = set(detect_patterns(sentence, patterns))
         sentence_lower = sentence.lower()
         matched_keywords = [kw for kw in rules_for_category if kw.lower() in sentence_lower]
-        
-        # Si la frase comparte patrones con el buffer, la concatenamos
+
         if buffer and (buffer_patterns & sentence_patterns):
             buffer += " " + sentence
             buffer_patterns.update(sentence_patterns)
         else:
             if buffer:
                 cited_articles.append(buffer)
-                # Calcular score
                 buffer_lower = buffer.lower()
                 buffer_matched_keywords = [kw for kw in rules_for_category if kw.lower() in buffer_lower]
                 if buffer_matched_keywords or buffer_patterns:
@@ -130,11 +128,9 @@ def explain_with_context(text: str, category: str) -> ExplanationResult:
                     sentence_scores.append(score)
                 else:
                     sentence_scores.append(0)
-            # Reiniciar buffer
             buffer = sentence
             buffer_patterns = sentence_patterns
-    
-    # Procesar último buffer
+
     if buffer:
         cited_articles.append(buffer)
         buffer_lower = buffer.lower()
@@ -146,15 +142,29 @@ def explain_with_context(text: str, category: str) -> ExplanationResult:
         else:
             sentence_scores.append(0)
 
-    # Detectar misses
     for kw in rules_for_category:
         if not any(kw.lower() in s.lower() for s in cited_articles):
             misses.append(kw)
 
-    compliance_status = "✅" if not misses else "⚠️" if hits else "❌"
-    confidence = max(sentence_scores) if sentence_scores else 0.0
-    summary = f"Resumen para '{category}': {len(hits)} fragmentos con coincidencias, {len(misses)} palabras clave faltantes ({misses})."
-    
+    # NUEVO: cálculo basado en porcentaje de keywords encontradas
+    total_keywords = len(rules_for_category)
+    found_keywords = total_keywords - len(misses)
+    percent = (found_keywords / total_keywords) * 100 if total_keywords > 0 else 0
+
+    if percent >= 60:
+        compliance_status = "✅"
+    elif 30 <= percent < 60:
+        compliance_status = "⚠️"
+    else:
+        compliance_status = "❌"
+
+    confidence = percent / 100
+    summary = (
+        f"Resumen para '{category}': {len(hits)} fragmentos con coincidencias, "
+        f"{len(misses)} palabras clave faltantes ({misses}), "
+        f"cumplimiento: {percent:.1f}%."
+    )
+
     return ExplanationResult(
         summary=summary,
         cited_articles=cited_articles,

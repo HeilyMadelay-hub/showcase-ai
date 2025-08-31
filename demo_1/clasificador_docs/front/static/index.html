@@ -1,99 +1,253 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clasificador de documentos legales — Demo</title>
-  <link rel="stylesheet" href="./style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Documentos Legales - Sistema Avanzado</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <header class="container">
-    <h1>Clasificador de documentos legales</h1>
-    <p class="subtitle">Sube un documento, clasifícalo y busca entre los ya cargados.</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="main-title">
+                        <i class="fas fa-balance-scale"></i>
+                        Clasificador de Documentos Legales
+                    </h1>
+                    <p class="subtitle">Sistema inteligente de análisis y clasificación documental</p>
+                </div>
+                <div class="header-right">
+                    <div class="api-status">
+                        <span class="status-indicator" id="apiStatus"></span>
+                        <span class="api-url" id="apiUrl">Conectando...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <!-- Indicador de a qué API apunta el front (para saber si estamos conectados) -->
-    <small class="muted">API: <span id="apiUrl">—</span></small>
-  </header>
+    <!-- Sistema de Notificaciones Toast -->
+    <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Contenedor de notificaciones "toast" -->
-  <div id="toaster" class="toaster" aria-live="polite"></div>
-  <!-- Banner de error visible para el usuario -->
-  <div id="errorBox" class="toast err" style="display:none; max-width:1100px; margin:0 auto;"></div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Sección de Upload -->
+            <section class="upload-section glass-card">
+                <div class="section-header">
+                    <h2> Subir y Analizar Documento</h2>
+                </div>
+                <form id="uploadForm" class="upload-form">
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="fileInput" accept=".pdf,.docx,.txt" class="file-input">
+                        <label for="fileInput" class="file-label">
+                            <i class="fas fa-file-upload"></i>
+                            <span id="fileName">Seleccionar archivo PDF, DOCX o TXT</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn">
+                         Analizar Documento
+                    </button>
+                </form>
+
+                <!-- Resultados del Análisis -->
+                <div id="analysisResults" class="analysis-results hidden">
+                    <h3 class="results-title">
+                        <i class="fas fa-chart-line"></i> Resultados del Análisis
+                    </h3>
+                    
+                    <!-- Clasificación Principal -->
+                    <div class="result-card">
+                        <div class="result-header">
+                            <span class="result-label">Clasificación</span>
+                            <div id="categoryBadge" class="category-badge"></div>
+                        </div>
+                        <div class="confidence-meter">
+                            <div class="confidence-bar" id="confidenceBar"></div>
+                            <span class="confidence-text" id="confidenceText">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Estado de Compliance -->
+                    <div class="result-card">
+                        <div class="result-header">
+                            <span class="result-label">Estado de Compliance</span>
+                            <span id="complianceStatus" class="compliance-badge"></span>
+                        </div>
+                        <p id="explanation" class="explanation-text"></p>
+                    </div>
+
+                    <!-- Artículos Citados -->
+                    <div class="result-card" id="citedArticlesCard">
+                        <div class="result-header">
+                            <span class="result-label">
+                                <i class="fas fa-bookmark"></i> Artículos Citados
+                            </span>
+                            <span class="count-badge" id="articlesCount">0</span>
+                        </div>
+                        <div id="citedArticles" class="cited-articles"></div>
+                    </div>
+
+                    <!-- Hits y Misses -->
+                    <div class="stats-grid">
+                        <div class="stat-card hits-card">
+                            <div class="stat-header">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Coincidencias (Hits)</span>
+                                <span class="stat-count" id="hitsCount">0</span>
+                            </div>
+                            <div id="hitsList" class="matches-list"></div>
+                        </div>
+                        <div class="stat-card misses-card">
+                            <div class="stat-header">
+                                <i class="fas fa-times-circle"></i>
+                                <span>No Coincidencias (Misses)</span>
+                                <span class="stat-count" id="missesCount">0</span>
+                            </div>
+                            <div id="missesList" class="matches-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Integridad del Documento -->
+                    <div class="result-card integrity-card">
+                        <div class="result-header">
+                            <span class="result-label">
+                                <i class="fas fa-shield-alt"></i> Integridad del Documento
+                            </span>
+                        </div>
+                        <div class="hash-display">
+                            <code id="hashIntegrity"></code>
+                            <button class="btn-icon" onclick="copyHash()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="metadata">
+                            <span><i class="fas fa-calendar"></i> <span id="createdAt"></span></span>
+                            <span><i class="fas fa-fingerprint"></i> ID: <span id="documentId"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Búsqueda y Filtros -->
+            <div class="controls-grid">
+                <section class="glass-card">
+                    <h3><i class="fas fa-search"></i> Buscar Documentos</h3>
+                    <div class="search-controls">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar por contenido...">
+                        <button id="searchBtn" class="btn btn-secondary btn-search">
+                          Buscar
+                        </button>
 
 
-  <main class="container grid">
-    <!-- Tarjeta: Subida (consume POST /upload_document/) -->
-    <section class="card">
-      <h2>1) Subir y clasificar</h2>
-      <form id="uploadForm" class="row gap">
-        <input type="file" id="fileInput" accept=".pdf,.docx,.txt" required />
-        <button id="uploadBtn" class="btn" type="submit">Subir</button>
-        <span id="uploadStatus" class="muted" aria-live="polite"></span>
-      </form>
 
-      <!-- Aquí se pinta la categoría devuelta por el back tras subir (viene en la respuesta de POST /upload_document/) -->
-      <div id="uploadResult" class="pill-area"></div>
-    </section>
+                    </div>
+                </section>
 
-    <!-- Tarjeta: Búsqueda (consume GET /search_documents/?query=&category=&page=&page_size=) -->
-    <section class="card">
-      <h2>2) Buscar en documentos</h2>
-      <div class="row gap">
-        <input id="searchInput" type="text" placeholder="Escribe un término (ej. 'cláusula')" />
-        <button id="searchBtn" class="btn btn-secondary">Buscar</button>
-      </div>
-      <small class="muted">La búsqueda es de texto libre en el contenido.</small>
-    </section>
+                <section class="glass-card">
+                    <h3><i class="fas fa-filter"></i> Filtrar por Categoría</h3>
+                    <div class="filter-controls">
+                        <select id="categorySelect" class="category-select">
+                            <option value="">Todas las categorías</option>
+                            <option value="contrato">Contratos</option>
+                            <option value="sentencia">Sentencias</option>
+                            <option value="normativa">Normativas</option>
+                            <option value="fiscal">Fiscal</option>
+                            <option value="laboral">Laboral</option>
+                            <option value="licencia">Licencias</option>
+                            <option value="auto_resolucion">Auto/Resolución</option>
+                        </select>
+                        <button id="filterBtn" class="btn btn-secondary">
+                            Filtrar
+                        </button>
+                    </div>
+                </section>
 
-    <!-- Tarjeta: Filtro (consume GET /list_documents/?category=&page=&page_size= y POST /load_demo/) -->
-    <section class="card">
-      <h2>3) Filtrar por categoría</h2>
-      <div class="row gap">
-        <select id="categorySelect">
-          <option value="">Todas</option>
-          <option value="contrato">Contratos</option>
-          <option value="sentencia">Sentencias</option>
-          <option value="normativa">Normativas</option>
-          <option value="licencia">Licencias</option>
-          <option value="laboral">Laboral</option>
-          <option value="auto_resolucion">Otros</option>
-        </select>
-        <button id="listBtn" class="btn btn-secondary">Listar</button>
-        <!-- Este botón dispara POST /load_demo/ para precargar datos -->
-        <button id="loadDemoBtn" class="btn btn-ghost">Cargar dataset demo</button>
-      </div>
-    </section>
+                <section class="glass-card">
+                    <h3><i class="fas fa-database"></i> Datos Demo</h3>
+                    <button id="loadDemoBtn" class="btn btn-outline">
+                        <i class="fas fa-download"></i> Cargar Dataset Demo
+                    </button>
+                </section>
+            </div>
 
-    <!-- Resultados (se rellenan con la respuesta de GET /list_documents/ o GET /search_documents/) -->
-    <section class="card col-span-2">
-      <div class="row between">
-        <h2>Resultados</h2>
-        <!-- Este badge se actualiza con el total devuelto por el back (propiedad total) -->
-        <span id="countBadge" class="badge">0</span>
-      </div>
+            <!-- Tabla de Resultados -->
+            <section class="glass-card results-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Documentos en el Sistema</h2>
+                    <div class="results-info">
+                        <span class="total-badge" id="totalCount">0 documentos</span>
+                    </div>
+                </div>
 
-      <!-- La tabla se pinta con los campos id, title y category de cada documento devuelto por la API -->
-      <div class="table-wrap">
-        <table id="resultsTable">
-          <thead>
-            <tr><th>ID</th><th>Título</th><th>Categoría</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+                <div class="table-wrapper">
+                    <table id="resultsTable" class="results-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre del Archivo</th>
+                                <th>Categoría</th>
+                                <th>Confianza</th>
+                                <th>Compliance</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <!-- Los resultados se insertarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
 
-       <!-- Estado vacío cuando no hay resultados -->
-      <div id="emptyState" class="empty hidden">
-        <p>Sin resultados todavía. Carga el dataset demo, lista por categoría o realiza una búsqueda.</p>
-      </div>
-    </section>
-  </main>
+                <!-- Estado vacío -->
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No hay documentos en el sistema</p>
+                    <small>Sube un documento o carga el dataset demo para comenzar</small>
+                </div>
 
-  <footer class="container footer">
-    <small class="muted">Demo UI — HTML • CSS • JS vainilla. Luego conectamos al backend FastAPI.</small>
-  </footer>
+                <!-- Paginación -->
+                <div id="pagination" class="pagination hidden">
+                    <button id="prevBtn" class="btn-page" disabled>
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span class="page-info">
+                        Página <span id="currentPage">1</span> de <span id="totalPages">1</span>
+                    </span>
+                    <button id="nextBtn" class="btn-page">
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
 
-  
-  <script src="./script.js"></script>
+    <!-- Modal de Detalles -->
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalles del Documento</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Los detalles se insertarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Clasificador de Documentos Legales - Sistema de Análisis Avanzado</p>
+            <small>Desarrollado con FastAPI + HTML/CSS/JS</small>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

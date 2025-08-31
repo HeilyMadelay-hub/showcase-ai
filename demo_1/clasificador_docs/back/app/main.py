@@ -148,7 +148,10 @@ async def upload_document(file: UploadFile = File(...)) -> JSONResponse:
             confidence=float(confidence) if confidence is not None else 0.0,
             compliance=expl.compliance_status if hasattr(expl, "compliance_status") else "❌",
             hash_integrity=text_hash if text_hash else None,
-            explanation=expl.summary if hasattr(expl, "summary") else None
+            explanation=expl.summary if hasattr(expl, "summary") else None,
+            hits=expl.hits if hasattr(expl, "hits") else [],
+            misses=expl.misses if hasattr(expl, "misses") else [],
+            cited_articles=expl.cited_articles if hasattr(expl, "cited_articles") else []
         )
 
         if doc_id:
@@ -204,45 +207,43 @@ async def get_documents():
         logger.error(f"Error obteniendo documentos: {e}")
         raise HTTPException(status_code=500, detail=f"Error obteniendo documentos: {str(e)}")
 
-
 @app.post("/load_demo/")
 def load_demo():
     """Carga los documentos de prueba en la base de datos, evitando duplicados"""
     try:
-        # Inicializar base de datos (crea tabla si no existe)
         db.init_db()
         logger.info("Base de datos inicializada correctamente.")
         
-        # Obtener documentos ya existentes en la DB
         existing_docs = db.get_documents()
         existing_hashes = {doc["hash_integrity"] for doc in existing_docs if doc["hash_integrity"]}
-
-        # Cargar datos de demo en memoria
         demo.load_demo_data()
         logger.info("Datos de demo cargados en memoria.")
-        
-        # Insertar documentos de demo evitando duplicados
         count = 0
         demo_documents = demo.get_documents()
         
         for doc in demo_documents:
             demo_hash = Hasher.sha256(doc["text"])
-
-            # Verificar si ya existe en DB
             if demo_hash in existing_hashes:
                 logger.warning(f"Documento '{doc['title']}' ya existe en la base de datos. Saltando...")
-                continue  # No insertamos duplicado
+                continue
+
+            # Calcular explicación y compliance para el demo
+            from app.compliance.compliance_engine import ComplianceEngine  # Importa si no está arriba
+            compliance_engine = ComplianceEngine()  # (si no tienes instancia global)
+            expl = compliance_engine.validate(doc["text"], doc.get("category", "sin clasificar"))
 
             doc_id = db.insert_document(
-                title=doc.get("title", "sin título"), 
-                text=doc.get("text", ""), 
+                title=doc.get("title", "sin título"),
+                text=doc.get("text", ""),
                 category=doc.get("category", "sin clasificar"),
                 confidence=0.85,  # Confianza por defecto para demos
-                compliance="✅",  # Status de compliance por defecto
+                compliance="✅",
                 hash_integrity=demo_hash,
-                explanation="Documento de demostración cargado automáticamente"
+                explanation=expl.summary if hasattr(expl, "summary") else "Documento de demostración cargado automáticamente",
+                hits=expl.hits if hasattr(expl, "hits") else [],
+                misses=expl.misses if hasattr(expl, "misses") else [],
+                cited_articles=expl.cited_articles if hasattr(expl, "cited_articles") else []
             )
-
             if doc_id:
                 count += 1
                 logger.info(f"Documento '{doc['title']}' insertado correctamente con ID {doc_id}.")
@@ -254,39 +255,10 @@ def load_demo():
             "message": f"{count} documentos cargados correctamente (sin duplicados).",
             "total_documents": len(existing_docs) + count
         }
-    
     except Exception as e:
         logger.error(f"Error cargando documentos de demo: {e}")
         return {"success": False, "error": str(e)}
-
-
-# ---------- Explain JSON ----------
-class ExplainRequest(BaseModel):
-    text: str
-    category: str
-
-@app.post("/demo_explain_json/")
-async def demo_explain_json(req: ExplainRequest):
-    """
-    Recibe texto y categoría, aplica ComplianceEngine y devuelve JSON
-    con hits, misses y status de cumplimiento.
-    """
-    # Llamamos al wrapper
-    result = compliance_engine.validate(req.text, req.category)
-
-    return {
-        "success": True,
-        "category": req.category if req.category else "sin clasificar",
-        "compliance_status": getattr(result, "compliance_status", "❌"),
-        "summary": getattr(result, "summary", ""),
-        "hits": getattr(result, "hits", []),
-        "misses": getattr(result, "misses", []),
-        "cited_articles": getattr(result, "cited_articles", []),
-        "confidence": getattr(result, "confidence", 0.0)
-    }
-
-# ---------- Endpoints de búsqueda y listado ----------
-
+    
 @app.get("/list_documents/")
 async def list_documents(
     category: str = Query(None, description="Filtrar por categoría"),
