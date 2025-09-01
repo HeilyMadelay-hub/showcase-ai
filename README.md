@@ -119,8 +119,6 @@ We specialize in building custom AI applications for law firms and legal departm
 
 [📧 **Email Us**](mailto:heilymadelayajtan@icloud.com) | [📞 **Call to Schedule Demo**](tel:+34640359233)
 
-*heilymadelayajtan@icloud.com | +34 640 359 233*
-
 </div>
 
 ---
