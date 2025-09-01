@@ -9,22 +9,31 @@
 
 **Professional system for uploading, classifying and auditing legal documents**
 
-*Combining NLP (Hugging Face), regulatory compliance, audit trail and security with encryption*
+*Combining NLP classification, regulatory compliance, audit trail and security with encryption*
 
-[Installation](#-quick-installation) • [Demo](#-quick-demo) • [Documentation](#-api-documentation) • [Contribute](#-contribute)
+[Installation](#-quick-installation) • [Demo Video](#-demo-video) • [Documentation](#-api-documentation) • [Contribute](#-contribute)
 
 </div>
 
 ---
 
+## 🎥 **Demo Video**
+
+🎬 **[Ver Demo Completo en YouTube](https://youtu.be/1x9Y7nYaUzw)**
+
+*Demostración del sistema de clasificación de documentos legales en funcionamiento*
+
+---
+
 ## 🎯 **Main Features**
 
-- 🤖 **Intelligent Classification** - NLP with Hugging Face models
-- 🔒 **Advanced Security** - AES-256 encryption and role control  
-- 📋 **Regulatory Compliance** - Automatic document validation
-- 🔍 **Complete Audit Trail** - Traceability with chained hash
-- 🌐 **Modern Web Interface** - Responsive and intuitive dashboard
-- ⚡ **REST API** - Robust endpoints for integrations
+- 🤖 **Intelligent Classification** - Keyword-based categorization with confidence scoring
+- 🔒 **Advanced Security** - SHA-256 encryption and file integrity verification  
+- 📋 **Regulatory Compliance** - Automatic document validation with detailed explanations
+- 🔍 **Complete Audit Trail** - Traceability with chained hash blockchain-style
+- 🌐 **Modern Web Interface** - Responsive dashboard with real-time results
+- ⚡ **REST API** - Robust endpoints for document management and search
+- 🧠 **Explanation Engine** - AI-powered analysis with hits/misses tracking
 
 ---
 
@@ -39,13 +48,13 @@
 ### 📦 Main Dependencies
 
 ```bash
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-transformers>=4.35.0
-torch>=2.1.0
-PyMuPDF>=1.23.0
-docx2txt>=0.8
-sqlite-utils>=3.35.0
+fastapi>=0.116.1
+uvicorn[standard]>=0.35.0
+transformers>=4.55.4
+torch>=2.8.0
+PyMuPDF>=1.26.4
+docx2txt>=0.9
+sqlite-utils>=3.38
 ```
 
 ---
@@ -58,29 +67,26 @@ clasificador_docs/
 │   ├── app/
 │   │   ├── 📊 audit/                 # Audit system
 │   │   │   └── audit_trail.py
-│   │   ├── 🧠 classification.py      # NLP engine
+│   │   ├── 🧠 classification.py      # Keywords-based classification engine
 │   │   ├── ⚖️ compliance/            # Legal validation
 │   │   │   └── compliance_engine.py
-│   │   ├── ⚙️ constants.py           # Configuration
-│   │   ├── 💾 database.py            # SQLite connection
-│   │   ├── 📝 demo_dataset.py        # Test data
-│   │   ├── 📄 ingestion.py           # Text extraction
-│   │   ├── 🔗 integration/           # Exports
-│   │   │   └── export_lexnet.py
+│   │   ├── 💾 database.py            # SQLite connection and queries
+│   │   ├── 📝 demo_dataset.py        # Test data loader
+│   │   ├── 🔍 explanation/           # AI explanation engine
+│   │   │   └── explanation.py
+│   │   ├── 📄 ingestion.py           # Text extraction (PDF/DOCX/TXT)
 │   │   ├── 🚀 main.py                # API endpoints
-│   │   ├── 🔍 search.py              # Search engine
-│   │   └── 🔐 security/              # Security
-│   │       ├── encryption.py
-│   │       └── roles.py
-│   ├── 📤 uploads/                   # Uploaded files
-│   └── 💾 documents.db               # Database
+│   │   └── 🔐 security/              # Security utilities
+│   │       └── encryption.py
+│   ├── 📤 uploads/                   # Uploaded files storage
+│   ├── 💾 documents.db               # SQLite database
+│   └── 📋 requirements.txt           # Dependencies
 ├── 🌐 front/                         # Web frontend
 │   └── static/
 │       ├── index.html
 │       ├── script.js
 │       └── style.css
-├── 🧪 test/                          # Unit tests
-└── ▶️ run_demo.py                    # Demo runner
+└── 📄 .gitignore                     # Git ignore rules
 ```
 
 ---
@@ -124,10 +130,11 @@ python -m uvicorn app.main:app --reload
 
 | Method | Endpoint | Description | Parameters |
 |--------|----------|-------------|------------|
-| `POST` | `/load_demo/` | Load demo dataset | - |
-| `POST` | `/upload_document/` | Upload and classify document | `file` (PDF/TXT) |
-| `GET` | `/list_documents/` | List documents | `category` (optional) |
-| `GET` | `/search_documents/` | Search in documents | `query` (required) |
+| `POST` | `/load_demo/` | Load demo dataset (avoids duplicates) | - |
+| `POST` | `/upload_document/` | Upload and classify document | `file` (PDF/DOCX/TXT) |
+| `GET` | `/documents/` | Get all documents with pagination | - |
+| `GET` | `/list_documents/` | List documents with filters | `category`, `page`, `page_size` |
+| `GET` | `/search_documents/` | Search in document content | `query`, `category`, `page`, `page_size` |
 
 ### 📤 **Upload Document**
 
@@ -144,28 +151,43 @@ file: [document.pdf]
   "success": true,
   "document_id": 1,
   "filename": "contract.pdf",
-  "detected_category": "contract",
-  "confidence": 0.92,
-  "all_scores": [
-    ["contract", 0.92],
-    ["judgment", 0.05],
-    ["regulation", 0.03]
-  ],
+  "category": "contrato",
+  "confidence": 0.85,
   "compliance_status": "✅",
-  "hash_integrity": "abc123..."
+  "explanation": "Resumen del análisis de compliance...",
+  "cited_articles": ["Art. 1234", "Cláusula 5"],
+  "hits": ["contrato", "partes", "firma"],
+  "misses": ["vigencia", "penalización"],
+  "hash_integrity": "abc123...",
+  "created_at": "2025-01-15T10:30:00"
 }
 ```
 
-### 📋 **List Documents**
+### 📋 **List Documents with Pagination**
 
 ```bash
-GET /list_documents/?category=contract
+GET /list_documents/?category=contrato&page=1&page_size=10
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "page": 1,
+  "page_size": 10,
+  "total": 25,
+  "total_pages": 3,
+  "has_next": true,
+  "has_previous": false,
+  "documents": [...],
+  "message": "Obtenidos 10 documentos de 25 totales"
+}
 ```
 
 ### 🔍 **Search Documents**
 
 ```bash
-GET /search_documents/?query=signature
+GET /search_documents/?query=signature&category=contrato&page=1
 ```
 
 ---
@@ -175,25 +197,27 @@ GET /search_documents/?query=signature
 ```mermaid
 graph TD
     A[👤 User uploads document] --> B[📄 ingestion.py - Extract text]
-    B --> C[🧠 classification.py - Classify with NLP]  
-    C --> D[⚖️ compliance_engine.py - Validate requirements]
-    D --> E[🔐 encryption.py - Encrypt and save]
-    E --> F[📊 audit_trail.py - Register with hash]
-    F --> G[💾 database.py - Save to SQLite]
-    G --> H[🔗 export_lexnet.py - Export]
-    H --> I[🌐 Frontend - Show results]
+    B --> C[🧠 classification.py - Classify with keywords]  
+    C --> D[🔍 explanation.py - Generate detailed analysis]
+    D --> E[⚖️ compliance_engine.py - Validate requirements]
+    E --> F[🔐 encryption.py - Generate SHA-256 hash]
+    F --> G[📊 audit_trail.py - Register with blockchain-style chain]
+    G --> H[💾 database.py - Save to SQLite]
+    H --> I[🌐 Frontend - Show results with hits/misses]
 ```
 
 ---
 
 ## 🌐 **Frontend Features**
 
-- ✨ **Modern Interface** - Responsive and intuitive design
-- 📊 **Interactive Dashboard** - Real-time metrics  
-- 🔍 **Advanced Filters** - Search and sorting
-- 📈 **Visual Indicators** - Compliance status
-- 🔒 **Access Control** - User role permissions
-- 📤 **Export** - External system integration
+- ✨ **Modern Interface** - Responsive glass-morphism design
+- 📊 **Interactive Dashboard** - Real-time classification results  
+- 🔍 **Advanced Search** - Content search with pagination
+- 📈 **Visual Indicators** - Compliance status and confidence meters
+- 🏷️ **Category Filters** - Filter by document types
+- 📤 **Drag & Drop Upload** - Intuitive file upload
+- 📋 **Detailed Analysis** - Shows hits, misses, and cited articles
+- 🔒 **Integrity Verification** - Document hash display
 
 ---
 
@@ -203,16 +227,20 @@ graph TD
 
 | Feature | Implementation |
 |---------|----------------|
-| **Encryption** | AES-256 for files |
-| **Access Control** | Roles: Senior/Junior Auditor, User |
+| **File Integrity** | SHA-256 hash verification |
 | **Audit Trail** | Chained hash (blockchain-style) |
-| **Integrity** | SHA-256 verification |
+| **Upload Security** | File extension validation |
+| **Data Encryption** | Secure hash generation |
 
-### ⚖️ Legal Validation
+### ⚖️ Legal Validation Categories
 
-- ✅ **Contracts** - Essential clauses verification
-- ⚖️ **Judgments** - Valid judicial structure  
-- 📜 **Regulations** - Correct regulatory format
+- ✅ **Contratos** - General contracts, sales, rental, transfer
+- ⚖️ **Sentencias** - Judicial sentences and constitutional court rulings
+- 📜 **Escrituras Públicas** - Notarial documents
+- 💰 **Documentos Fiscales** - Tax declarations, audits, financial statements
+- 🏢 **Documentos Laborales** - Employment contracts and agreements
+- 📋 **Actas** - Meeting minutes and official records
+- 🏛️ **Administrativos** - Resolutions and administrative acts
 
 ---
 
@@ -220,61 +248,96 @@ graph TD
 
 🔥 **Unique Characteristics:**
 
-- 🔗 **Mini Blockchain** - Immutable history with chained hash
-- 🤖 **Specialized AI** - Models trained for legal documents
-- 🏛️ **LexNet Integration** - Simulated export to judicial systems
-- 📊 **Control Room** - Executive dashboard with ROI metrics
-- 🔍 **Semantic Search** - Intelligent content analysis
-
----
-
-## 🧪 **Testing**
-
-Run complete tests:
-
-```bash
-# All tests
-python -m pytest test/
-
-# Specific test
-python -m pytest test/test_classification.py -v
-
-# Coverage
-python -m pytest --cov=app test/
-```
-
-### 📋 Test Coverage
-
-- ✅ Text extraction (`extract_text_from_file()`)
-- ✅ NLP classification (`classify_text()`)  
-- ✅ Compliance validation
-- ✅ Security and encryption
-- ✅ Audit trail
+- 🔗 **Mini Blockchain** - Immutable audit history with chained hashes
+- 🤖 **Keywords Classification** - Fast, explainable classification system  
+- 🔍 **Explanation Engine** - Detailed analysis showing hits and misses
+- 📊 **Compliance Scoring** - Percentage-based compliance evaluation
+- 🎯 **Multi-format Support** - PDF, DOCX, and TXT processing
+- 📈 **Confidence Metrics** - Quantified classification confidence
 
 ---
 
 ## 🚀 **Quick Demo**
 
-### 1. Load demo data
+### 1. Start the server
+```bash
+cd back
+python -m uvicorn app.main:app --reload
+```
+
+### 2. Open web interface
+```
+http://localhost:8000/front/static/index.html
+```
+
+### 3. Load demo data
 ```bash
 curl -X POST http://localhost:8000/load_demo/
 ```
 
-### 2. Upload a document
+### 4. Upload a document
 ```bash
 curl -X POST "http://localhost:8000/upload_document/" \
   -F "file=@document.pdf"
 ```
 
-### 3. List documents
+### 5. Search documents
 ```bash
-curl http://localhost:8000/list_documents/
+curl "http://localhost:8000/search_documents/?query=contrato&page=1"
 ```
 
-### 4. Search by term
+---
+
+## 🎯 **Classification Categories**
+
+The system recognizes the following document types:
+
+| Category | Description | Keywords Count |
+|----------|-------------|----------------|
+| **contrato** | General contracts | 29 keywords |
+| **contrato_traspaso** | Business transfer contracts | 12 keywords |
+| **contrato_arrendamiento** | Rental agreements | 14 keywords |
+| **contrato_compraventa** | Sale contracts | 13 keywords |
+| **escritura_publica** | Notarial documents | 17 keywords |
+| **sentencia_judicial** | Court sentences | 22 keywords |
+| **sentencia_TC** | Constitutional court rulings | 14 keywords |
+| **factura** | Invoices and billing | 25 keywords |
+| **acta** | Meeting minutes | 23 keywords |
+| **poder_notarial** | Power of attorney | 14 keywords |
+| **laboral** | Labor contracts | 25 keywords |
+| **fiscal** | Tax documents | 11 keywords |
+
+---
+
+## 🔧 **Development Guide**
+
+### Running the Backend
 ```bash
-curl "http://localhost:8000/search_documents/?query=contract"
+cd back
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+### Accessing the Frontend
+```
+http://localhost:8000/front/static/index.html
+```
+
+### API Documentation
+```
+http://localhost:8000/docs          # Swagger UI
+http://localhost:8000/redoc         # ReDoc
+```
+
+---
+
+## 📊 **Database Schema**
+
+The SQLite database stores:
+- **Documents**: ID, title, text, category, confidence, compliance status
+- **Metadata**: Creation timestamp, file hash, explanation details
+- **Analysis Results**: Hits, misses, cited articles
+- **Audit Trail**: Blockchain-style event chain
 
 ---
 
@@ -288,9 +351,22 @@ curl "http://localhost:8000/search_documents/?query=contract"
 
 ---
 
+## 📝 **Technical Notes**
+
+- **Classification Method**: Keywords-based heuristic approach (not ML model)
+- **File Processing**: Supports PDF (PyMuPDF), DOCX (docx2txt), and TXT files
+- **Database**: SQLite with full-text search capabilities
+- **Security**: SHA-256 hashing for document integrity
+- **Frontend**: Vanilla HTML/CSS/JS with modern glass-morphism design
+- **API**: FastAPI with automatic OpenAPI documentation
+
+---
+
 <div align="center">
 
 **⭐ If it has been useful, give the repo a star! ⭐**
+
+🎬 **[Watch Full Demo on YouTube](https://youtu.be/1x9Y7nYaUzw)**
 
 *Developed with ❤️ for the legal community*
 
