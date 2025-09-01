@@ -2,6 +2,7 @@
 
 <div align="center">
 
+<img src="Captura de pantalla 2025-08-31 161033.png" alt="Legal Document Classifier – dashboard" width="860">
 ![Python](https://img.shields.io/badge/python-v3.10+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
