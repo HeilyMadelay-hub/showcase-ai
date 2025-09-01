@@ -117,7 +117,7 @@ Each demo branch contains its own README with detailed setup and usage instructi
 
 We specialize in building custom AI applications for law firms and legal departments.
 
-[📧 **Email Us**](mailto:heilymadelayajtan@icloud.com) | [📞 **Call to Schedule Demo**](tel:+34640359233)
+[📧 **Email Us**](mailto:heilymadelayajtan@icloud.com) | [📞 **Call to Schedule Demo**](tel:+34640359233) 640359233
 
 </div>
 
