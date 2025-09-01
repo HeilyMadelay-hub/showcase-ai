@@ -1,134 +1,134 @@
-# Backend - Clasificador de Documentos
+# Backend - Document Classifier
 
-API REST desarrollada con FastAPI para la clasificación automática de documentos legales y administrativos con análisis de compliance y auditoría integrada.
+REST API developed with FastAPI for automatic classification of legal and administrative documents with integrated compliance analysis and auditing.
 
-## 🚀 Características Principales
+## 🚀 Main Features
 
-- **Clasificación automática** de documentos usando análisis de palabras clave
-- **Procesamiento de múltiples formatos**: PDF, DOCX y TXT
-- **Análisis de compliance** normativo con detección de hits/misses
-- **Sistema de auditoría** con hashing SHA256 para integridad
-- **Base de datos SQLite** para persistencia
-- **API REST completa** con endpoints de consulta y búsqueda
-- **Datos de demostración** precargados
+- **Automatic document classification** using keyword analysis
+- **Multi-format processing**: PDF, DOCX and TXT
+- **Regulatory compliance analysis** with hits/misses detection
+- **Audit system** with SHA256 hashing for integrity
+- **SQLite database** for persistence
+- **Complete REST API** with query and search endpoints
+- **Pre-loaded demonstration data**
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 back/
-├── app/                          # Código principal de la aplicación
-│   ├── audit/                    # Sistema de auditoría y trazabilidad
-│   ├── compliance/               # Motor de validación de compliance
-│   │   └── compliance_engine.py  # Validación de documentos según categoría
-│   ├── explanation/              # Sistema de explicaciones y análisis
-│   │   └── explanation.py        # Análisis de hits/misses por patrones
-│   ├── security/                 # Utilidades de seguridad
-│   │   └── encryption.py         # Hashing SHA256 para integridad
-│   ├── classification.py         # Clasificador basado en keywords
-│   ├── database.py               # Gestión de base de datos SQLite
-│   ├── demo_dataset.py           # Datos de demostración
-│   ├── ingestion.py              # Procesamiento y extracción de texto
-│   └── main.py                   # Aplicación FastAPI principal
-├── uploads/                      # Carpeta para archivos subidos
-├── documents.db                  # Base de datos SQLite
-├── requirements.txt              # Dependencias de Python
-└── .venv/                        # Entorno virtual de Python
+├── app/                          # Main application code
+│   ├── audit/                    # Audit and traceability system
+│   ├── compliance/               # Compliance validation engine
+│   │   └── compliance_engine.py  # Document validation by category
+│   ├── explanation/              # Explanation and analysis system
+│   │   └── explanation.py        # Hits/misses analysis by patterns
+│   ├── security/                 # Security utilities
+│   │   └── encryption.py         # SHA256 hashing for integrity
+│   ├── classification.py         # Keyword-based classifier
+│   ├── database.py               # SQLite database management
+│   ├── demo_dataset.py           # Demonstration data
+│   ├── ingestion.py              # Text processing and extraction
+│   └── main.py                   # Main FastAPI application
+├── uploads/                      # Folder for uploaded files
+├── documents.db                  # SQLite database
+├── requirements.txt              # Python dependencies
+└── .venv/                        # Python virtual environment
 ```
 
-## 🔧 Componentes del Sistema
+## 🔧 System Components
 
-### **main.py** - API Principal
-FastAPI con 4 endpoints principales:
-- `POST /upload_document/` - Subida y procesamiento completo de documentos
-- `GET /documents` - Lista todos los documentos almacenados
-- `POST /load_demo/` - Carga datos de demostración (evita duplicados)
-- `GET /list_documents/` - Lista con paginación y filtros por categoría
-- `GET /search_documents/` - Búsqueda de texto con paginación
+### **main.py** - Main API
+FastAPI with 4 main endpoints:
+- `POST /upload_document/` - Upload and complete document processing
+- `GET /documents` - List all stored documents
+- `POST /load_demo/` - Load demonstration data (avoids duplicates)
+- `GET /list_documents/` - List with pagination and category filters
+- `GET /search_documents/` - Text search with pagination
 
-### **classification.py** - Clasificador de Documentos
-Sistema de clasificación basado en palabras clave que reconoce:
+### **classification.py** - Document Classifier
+Keyword-based classification system that recognizes:
 
-| Categoría | Ejemplos de Keywords |
-|-----------|---------------------|
-| **contrato** | contrato, partes, cláusula, firmas, objeto del contrato |
-| **contrato_traspaso** | traspaso, negocio en funcionamiento, fondo de comercio |
-| **contrato_arrendamiento** | arrendamiento, arrendador, arrendatario, renta mensual |
-| **contrato_compraventa** | compraventa, vendedor, comprador, precio de venta |
-| **escritura_publica** | escritura pública, notario, protocolo, fe pública |
-| **factura** | factura, RFC emisor, IVA, CFDI, UUID |
-| **acta** | acta, asistentes, orden del día, acuerdos |
-| **poder_notarial** | poder notarial, apoderado, facultades, representación |
-| **estado_financiero** | activo, pasivo, balance general, flujo de efectivo |
-| **sentencia_judicial** | sentencia, tribunal, fallo, demandante |
-| **laboral** | contrato laboral, empleado, salario, prestaciones |
-| **mercantil** | sociedad, objeto social, capital, accionistas |
+| Category | Keyword Examples |
+|----------|------------------|
+| **contrato** | contract, parties, clause, signatures, contract object |
+| **contrato_traspaso** | transfer, functioning business, business assets |
+| **contrato_arrendamiento** | lease, lessor, lessee, monthly rent |
+| **contrato_compraventa** | sale, seller, buyer, sale price |
+| **escritura_publica** | public deed, notary, protocol, public faith |
+| **factura** | invoice, issuer RFC, VAT, CFDI, UUID |
+| **acta** | minutes, attendees, agenda, agreements |
+| **poder_notarial** | notarial power, attorney, powers, representation |
+| **estado_financiero** | assets, liabilities, balance sheet, cash flow |
+| **sentencia_judicial** | sentence, court, ruling, plaintiff |
+| **laboral** | labor contract, employee, salary, benefits |
+| **mercantil** | company, corporate purpose, capital, shareholders |
 
-### **database.py** - Gestión de Datos
-Clase `Database` que maneja:
-- **Tabla documents** con campos: id, title, text, category, confidence, compliance, hash_integrity, explanation, hits, misses, cited_articles, created_at
-- **Operaciones CRUD** con métodos `insert_document()`, `get_documents()`, `fetch_documents()`
-- **Paginación y filtros** por categoría y búsqueda de texto
-- **Serialización JSON** para campos de arrays (hits, misses, cited_articles)
+### **database.py** - Data Management
+`Database` class that handles:
+- **Documents table** with fields: id, title, text, category, confidence, compliance, hash_integrity, explanation, hits, misses, cited_articles, created_at
+- **CRUD operations** with methods `insert_document()`, `get_documents()`, `fetch_documents()`
+- **Pagination and filters** by category and text search
+- **JSON serialization** for array fields (hits, misses, cited_articles)
 
-### **ingestion.py** - Procesamiento de Archivos
-Clase `DocumentIngestion` con capacidades de:
-- **Extracción de texto** de PDF (PyMuPDF), DOCX (docx2txt) y TXT
-- **Validación de archivos** (tipos soportados, tamaño máximo 50MB)
-- **Manejo de errores** robusto con `ExtractionResult`
-- **Codificaciones múltiples** para archivos de texto
+### **ingestion.py** - File Processing
+`DocumentIngestion` class with capabilities for:
+- **Text extraction** from PDF (PyMuPDF), DOCX (docx2txt) and TXT
+- **File validation** (supported types, maximum size 50MB)
+- **Robust error handling** with `ExtractionResult`
+- **Multiple encodings** for text files
 
-### **compliance/compliance_engine.py** - Validación Normativa
-Motor que valida documentos usando:
-- **Sistema de explicaciones** contextual por categoría
-- **Estado de compliance**: ✅ (cumple), ⚠️ (parcial), ❌ (no cumple)
-- **Retorno estructurado** con `ExplanationResult`
+### **compliance/compliance_engine.py** - Regulatory Validation
+Engine that validates documents using:
+- **Contextual explanation system** by category
+- **Compliance status**: ✅ (compliant), ⚠️ (partial), ❌ (non-compliant)
+- **Structured return** with `ExplanationResult`
 
-### **explanation/explanation.py** - Análisis Contextual
-Sistema avanzado que genera:
-- **Detección de patrones** con regex para elementos legales
-- **Hits y misses** por keywords de la categoría
-- **Cálculo de porcentaje** de cumplimiento (≥60% = ✅, 30-59% = ⚠️, <30% = ❌)
-- **Fragmentación inteligente** del texto en oraciones
-- **Artículos citados** extraídos automáticamente
+### **explanation/explanation.py** - Contextual Analysis
+Advanced system that generates:
+- **Pattern detection** with regex for legal elements
+- **Hits and misses** by category keywords
+- **Percentage calculation** of compliance (≥60% = ✅, 30-59% = ⚠️, <30% = ❌)
+- **Smart fragmentation** of text into sentences
+- **Automatically extracted** cited articles
 
-### **security/encryption.py** - Seguridad
-Utilidad `Hasher` para:
-- **Hash SHA256** de contenido de documentos
-- **Integridad de datos** para detectar modificaciones
-- **Validación de inputs** con manejo de errores
+### **security/encryption.py** - Security
+`Hasher` utility for:
+- **SHA256 hash** of document content
+- **Data integrity** to detect modifications
+- **Input validation** with error handling
 
-### **demo_dataset.py** - Datos de Prueba
-Dataset con 10 documentos de ejemplo que incluye:
-- **Variedad de categorías** (contratos, sentencias, facturas, actas)
-- **Diferentes estados de compliance** (✅, ⚠️, ❌)
-- **Datos completos** con hash, explicaciones y análisis
+### **demo_dataset.py** - Test Data
+Dataset with 10 example documents that includes:
+- **Variety of categories** (contracts, sentences, invoices, minutes)
+- **Different compliance states** (✅, ⚠️, ❌)
+- **Complete data** with hash, explanations and analysis
 
-## 🛠️ Instalación y Configuración
+## 🛠️ Installation and Configuration
 
-### Prerrequisitos
+### Prerequisites
 - Python 3.8+
 - pip
 
-### Instalación
+### Installation
 
-1. **Clonar/ubicar el proyecto**
+1. **Clone/locate the project**
 ```bash
 cd C:\Users\heily\Desktop\demos\demo_1\clasificador_docs\back
 ```
 
-2. **Crear entorno virtual**
+2. **Create virtual environment**
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # Windows
 # source .venv/bin/activate  # Linux/Mac
 ```
 
-3. **Instalar dependencias**
+3. **Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Ejecutar la aplicación**
+4. **Run the application**
 ```bash
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -136,140 +136,140 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ## 📚 API Endpoints
 
 ### 🔄 **POST** `/upload_document/`
-Procesa un archivo completo: extracción → clasificación → compliance → almacenamiento
+Processes a complete file: extraction → classification → compliance → storage
 
-**Request**: Archivo (PDF/DOCX/TXT)
+**Request**: File (PDF/DOCX/TXT)
 
 **Response**:
 ```json
 {
   "success": true,
   "document_id": 123,
-  "filename": "contrato.pdf",
+  "filename": "contract.pdf",
   "category": "contrato",
   "confidence": 0.85,
   "compliance_status": "✅",
-  "explanation": "Resumen del análisis...",
+  "explanation": "Analysis summary...",
   "cited_articles": ["art. 1", "art. 2"],
-  "hits": ["partes", "objeto del contrato"],
-  "misses": ["cláusula penal"],
+  "hits": ["parties", "contract object"],
+  "misses": ["penalty clause"],
   "hash_integrity": "a1b2c3d4...",
   "created_at": "2025-09-01T10:30:00"
 }
 ```
 
 ### 📄 **GET** `/documents`
-Lista todos los documentos almacenados
+Lists all stored documents
 
 **Response**:
 ```json
 {
   "documents": [...],
   "count": 25,
-  "message": "Lista de documentos obtenida exitosamente"
+  "message": "Document list obtained successfully"
 }
 ```
 
 ### 📋 **GET** `/list_documents/`
-Lista con paginación y filtros
+List with pagination and filters
 
 **Query Parameters**:
-- `category` (opcional): Filtrar por categoría
-- `page` (default=1): Número de página
-- `page_size` (default=10, max=100): Documentos por página
+- `category` (optional): Filter by category
+- `page` (default=1): Page number
+- `page_size` (default=10, max=100): Documents per page
 
 ### 🔍 **GET** `/search_documents/`
-Búsqueda de texto en documentos
+Text search in documents
 
 **Query Parameters**:
-- `query` (requerido): Término de búsqueda
-- `category` (opcional): Filtrar por categoría
-- `page`, `page_size`: Paginación
+- `query` (required): Search term
+- `category` (optional): Filter by category
+- `page`, `page_size`: Pagination
 
 ### 🎯 **POST** `/load_demo/`
-Carga 10 documentos de demostración (evita duplicados por hash)
+Loads 10 demonstration documents (avoids duplicates by hash)
 
-## 💾 Base de Datos
+## 💾 Database
 
-### Tabla `documents`
-| Campo | Tipo | Descripción |
+### `documents` Table
+| Field | Type | Description |
 |-------|------|-------------|
-| `id` | INTEGER | ID autoincremental |
-| `title` | TEXT | Título del documento |
-| `text` | TEXT | Contenido extraído |
-| `category` | TEXT | Categoría clasificada |
-| `confidence` | REAL | Confianza de clasificación (0-1) |
-| `compliance` | TEXT | Estado: ✅, ⚠️, ❌ |
-| `hash_integrity` | TEXT | Hash SHA256 del contenido |
-| `explanation` | TEXT | Resumen del análisis |
-| `hits` | TEXT | JSON: keywords encontradas |
-| `misses` | TEXT | JSON: keywords faltantes |
-| `cited_articles` | TEXT | JSON: artículos extraídos |
-| `created_at` | TIMESTAMP | Fecha de creación |
+| `id` | INTEGER | Auto-incremental ID |
+| `title` | TEXT | Document title |
+| `text` | TEXT | Extracted content |
+| `category` | TEXT | Classified category |
+| `confidence` | REAL | Classification confidence (0-1) |
+| `compliance` | TEXT | Status: ✅, ⚠️, ❌ |
+| `hash_integrity` | TEXT | SHA256 hash of content |
+| `explanation` | TEXT | Analysis summary |
+| `hits` | TEXT | JSON: found keywords |
+| `misses` | TEXT | JSON: missing keywords |
+| `cited_articles` | TEXT | JSON: extracted articles |
+| `created_at` | TIMESTAMP | Creation date |
 
-## 🔒 Seguridad y Compliance
+## 🔒 Security and Compliance
 
-- **Validación de archivos**: Tipos permitidos, tamaño máximo 50MB
-- **Hash de integridad**: SHA256 para detectar modificaciones
-- **Sanitización**: Limpieza de queries de búsqueda
-- **CORS configurado**: Permite peticiones cross-origin
-- **Logging estructurado**: Trazabilidad completa de operaciones
+- **File validation**: Allowed types, maximum size 50MB
+- **Integrity hash**: SHA256 to detect modifications
+- **Sanitization**: Cleaning of search queries
+- **CORS configured**: Allows cross-origin requests
+- **Structured logging**: Complete operation traceability
 
-## 📊 Flujo de Procesamiento
+## 📊 Processing Flow
 
 ```
-📁 Archivo → 🔍 Validación → 📄 Extracción de Texto → 
-🏷️ Clasificación → ⚖️ Compliance → 🔐 Hash SHA256 → 
-💾 Base de Datos → 📋 Audit Trail → ✅ Respuesta JSON
+📁 File → 🔍 Validation → 📄 Text Extraction → 
+🏷️ Classification → ⚖️ Compliance → 🔐 SHA256 Hash → 
+💾 Database → 📋 Audit Trail → ✅ JSON Response
 ```
 
-## 🎮 Datos de Demostración
+## 🎮 Demonstration Data
 
-El sistema incluye 10 documentos de ejemplo con:
-- **Contratos** (arrendamiento, prestación servicios, confidencialidad)
-- **Sentencias judiciales** (favorable y desestimatoria)
-- **Normativas** (reglamento interno, seguridad)
-- **Licencias** (software, uso de imagen)
-- **Estados variados** de compliance para testing
+The system includes 10 example documents with:
+- **Contracts** (lease, service provision, confidentiality)
+- **Judicial sentences** (favorable and dismissive)
+- **Regulations** (internal regulations, security)
+- **Licenses** (software, image usage)
+- **Varied compliance states** for testing
 
 ## 🧪 Testing
 
-Para probar la API:
+To test the API:
 
-1. **Documentación interactiva**: http://localhost:8000/docs
-2. **Cargar demos**: `POST /load_demo/`
-3. **Subir documento**: `POST /upload_document/` con archivo
-4. **Buscar**: `GET /search_documents/?query=contrato`
+1. **Interactive documentation**: http://localhost:8000/docs
+2. **Load demos**: `POST /load_demo/`
+3. **Upload document**: `POST /upload_document/` with file
+4. **Search**: `GET /search_documents/?query=contract`
 
-## 📦 Dependencias Principales
+## 📦 Main Dependencies
 
-- **FastAPI** 0.116.1+ - Framework web
-- **Transformers** 4.55.4+ - Procesamiento de lenguaje natural
-- **PyMuPDF** 1.26.4+ - Extracción de texto de PDF
-- **docx2txt** 0.9+ - Procesamiento de archivos Word
-- **sqlite-utils** 3.38+ - Utilidades de base de datos
-- **uvicorn** 0.35.0+ - Servidor ASGI
+- **FastAPI** 0.116.1+ - Web framework
+- **Transformers** 4.55.4+ - Natural language processing
+- **PyMuPDF** 1.26.4+ - PDF text extraction
+- **docx2txt** 0.9+ - Word file processing
+- **sqlite-utils** 3.38+ - Database utilities
+- **uvicorn** 0.35.0+ - ASGI server
 
-## 🏃‍♂️ Inicio Rápido
+## 🏃‍♂️ Quick Start
 
 ```bash
-# Activar entorno
+# Activate environment
 .venv\Scripts\activate
 
-# Ejecutar servidor
+# Run server
 python -m uvicorn app.main:app --reload
 
-# Cargar datos de demo
+# Load demo data
 curl -X POST http://localhost:8000/load_demo/
 
-# Listar documentos
+# List documents
 curl http://localhost:8000/documents
 ```
 
-## 📝 Notas de Desarrollo
+## 📝 Development Notes
 
-- **CORS habilitado** para desarrollo frontend
-- **Logging configurado** a nivel INFO
-- **Manejo de errores** con HTTPException
-- **Timestamps automáticos** en base de datos
-- **Prevención de duplicados** por hash de contenido
+- **CORS enabled** for frontend development
+- **Logging configured** at INFO level
+- **Error handling** with HTTPException
+- **Automatic timestamps** in database
+- **Duplicate prevention** by content hash
